@@ -65,7 +65,7 @@ public class WeaponControllerClient {
 	public static void serverSendEvent(
 		@StorageOption.Instance EntityPlayer player,
 		@StorageOption.Data Byte keyID,
-		@StorageOption.Enum SyncEventType type) {
+		@StorageOption.Instance SyncEventType type) {
 		WeaponControllerServer.sendEvent(player, keyID, type);
 	}
 	
