@@ -57,7 +57,7 @@ public class ItemInfo {
 			disposed = true;
 		}
 		
-		System.out.println("Created ItemInfo");
+		//System.out.println("Created ItemInfo");
 	}
 	
 	public void tick() {

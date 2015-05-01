@@ -13,6 +13,7 @@
 package cn.weaponry;
 
 import cn.academy.core.AcademyCraft;
+import cn.weaponry.api.ctrl.KeyEventType;
 import cn.weaponry.api.item.WeaponBase;
 import cn.weaponry.api.state.WeaponState;
 import cn.weaponry.api.state.WeaponStateMachine;
@@ -32,24 +33,30 @@ public class WeaponTest extends WeaponBase {
 	public void initStates(WeaponStateMachine machine) {
 		machine.addState("state1", new State1());
 		machine.addState("state2", new State2());
+		machine.setInitState("state1");
 	}
 	
 	static class State1 extends WeaponState {
 		int ticker = 0;
 		
 		public void enterState() {
-			System.out.println("Enter state1 #" + isRemote());
+			//System.out.println("Enter state1 #" + isRemote());
+		}
+		
+		@Override
+		public void onCtrl(int key, KeyEventType type) {
+			System.out.println(key + " " + type + " via " + isRemote());
 		}
 		
 		public void tickState() {
 			if(++ticker == 20) {
 				ticker = 0;
-				transitState("state2");
+				//transitState("state2");
 			}
 		}
 		
 		public void leaveState() {
-			System.out.println("Leave state1 #" + isRemote());
+			//System.out.println("Leave state1 #" + isRemote());
 		}
 	}
 	
@@ -57,18 +64,18 @@ public class WeaponTest extends WeaponBase {
 		int ticker = 0;
 		
 		public void enterState() {
-			System.out.println("Enter state2 #" + isRemote());
+			//System.out.println("Enter state2 #" + isRemote());
 		}
 		
 		public void tickState() {
 			if(++ticker == 20) {
 				ticker = 0;
-				transitState("state1");
+				//transitState("state1");
 			}
 		}
 		
 		public void leaveState() {
-			System.out.println("Leave state2 #" + isRemote());
+			//System.out.println("Leave state2 #" + isRemote());
 		}
 	}
 

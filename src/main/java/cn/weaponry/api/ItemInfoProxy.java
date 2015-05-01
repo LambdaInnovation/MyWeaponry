@@ -30,6 +30,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 import cpw.mods.fml.relauncher.Side;
 
 /**
+ * The class handling ItemInfo loading.
  * @author WeAthFolD
  */
 @RegistrationClass
@@ -108,6 +109,12 @@ public class ItemInfoProxy {
 		
 	}
 	
+	/**
+	 * Get the <code>ItemInfo</code> instance for current player. You will get different instance at client and server.
+	 * It is guaranteed the info corresponds to the current holding itemStack.
+	 * @param player
+	 * @return The ItemInfo if current stack is of item type IItemInfoProvider, or null
+	 */
 	public static ItemInfo getInfo(EntityPlayer player) {
 		return getProxy().getInfo(player);
 	}

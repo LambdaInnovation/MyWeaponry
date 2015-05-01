@@ -14,8 +14,7 @@ package cn.weaponry.api.ctrl;
 
 /**
  * @author WeAthFolD
- *
  */
 public enum KeyEventType {
-	DOWN, UP, TICK
+	DOWN, UP, TICK, ABORT
 }

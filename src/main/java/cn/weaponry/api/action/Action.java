@@ -51,6 +51,9 @@ public abstract class Action {
 	
 	public void onAborted() {}
 	
+	/**
+	 * onFinalize will be called when either onNormalEnd and onAborted is called.
+	 */
 	public void onFinalize() {}
 	
 	//---

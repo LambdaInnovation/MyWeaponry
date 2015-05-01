@@ -58,8 +58,12 @@ public class WeaponStateMachine extends Action {
 		return states.get(name);
 	}
 	
-	public void receiveControl(int keyID, KeyEventType type) {
-		currentState.onCtrl(keyID, type);
+	public void onCtrl(int keyID, KeyEventType type) {
+		if(type == KeyEventType.ABORT) {
+			abortAction();
+		} else {
+			currentState.onCtrl(keyID, type);
+		}
 	}
 	
 	@Override

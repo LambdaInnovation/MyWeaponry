@@ -45,7 +45,7 @@ public abstract class WeaponBase extends ItemSword implements IItemInfoProvider,
 		ItemInfo info = ItemInfoProxy.getInfo(player);
 		WeaponStateMachine wsm = info.getAction("StateMachine");
 		if(wsm != null) {
-			wsm.receiveControl(key, type);
+			wsm.onCtrl(key, type);
 		}
 	}
 	
