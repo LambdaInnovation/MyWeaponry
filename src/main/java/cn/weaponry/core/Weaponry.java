@@ -17,10 +17,13 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cn.annoreg.core.RegistrationClass;
 import cn.annoreg.core.RegistrationManager;
 import cn.annoreg.core.RegistrationMod;
+import cn.annoreg.mc.RegItem;
 import cn.annoreg.mc.RegMessageHandler;
 import cn.liutils.core.LIUtils;
+import cn.weaponry.WeaponTest;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -33,11 +36,10 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
  * Main class of MyWeaponry.
  * @author WeathFolD
  */
-@Mod(modid = "weaponry", name = "MyWeaponry", version = LIUtils.VERSION)
+@Mod(modid = "weaponry", name = "MyWeaponry")
 @RegistrationMod(pkg = "cn.weaponry.", res = "weaponry", prefix = "mw_")
+@RegistrationClass
 public class Weaponry {
-	
-	public static final String DEPENDENCY = "required-after:weaponry@" + LIUtils.VERSION;
 	
 	private static final String NET_CHANNEL = "weaponry";
 	
@@ -50,6 +52,9 @@ public class Weaponry {
 	
 	@RegMessageHandler.WrapperInstance
 	public static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(NET_CHANNEL);
+	
+	@RegItem
+	public static WeaponTest test = new WeaponTest();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
