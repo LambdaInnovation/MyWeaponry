@@ -12,11 +12,19 @@
  */
 package cn.weaponry.api.action;
 
+import java.lang.reflect.Field;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import cn.liutils.cgui.utils.TypeHelper;
 import cn.weaponry.api.ItemInfo;
+import cn.weaponry.core.Weaponry;
 
 /**
+ * The action somehow supports prototype pattern so it included copy() method to avoid boilerplate. 
+ * If an action isn't intended to be copied, it should warn the user.
  * @author WeAthFolD
  */
 public abstract class Action {
@@ -24,13 +32,17 @@ public abstract class Action {
 	/**
 	 * The itemInfo instance this Action is attached to. DONT MODIFY THIS FIELD!
 	 */
+	@CopyIgnored
 	public ItemInfo itemInfo;
 	
 	/**
 	 * Whether this action is being disposed(Needs to get removed).
 	 *  Do not directly change it, use finishAction() or abortAction().
 	 */
+	@CopyIgnored
 	public boolean disposed = false;
+	
+	int tick;
 	
 	public Action() {}
 	
@@ -40,7 +52,7 @@ public abstract class Action {
 	
 	public void onStart() {}
 	
-	public void onTick() {}
+	public void onTick(int tick) {}
 	
 	public void onNormalEnd() {}
 	
@@ -55,25 +67,39 @@ public abstract class Action {
 	
 	//---Events to drive this action
 	
-	public void startAction() {
+	public final void startAction() {
+		tick = 0;
 		onStart();
 	}
 	
-	public void finishAction() {
+	public final void finishAction() {
 		disposed = true;
 		onNormalEnd();
 		onFinalize();
 	}
 	
-	public void abortAction() {
+	public final void abortAction() {
 		disposed = true;
 		onAborted();
 		onFinalize();
 	}
 	
+	public final void tickAction() {
+		++tick;
+		onTick(tick);
+	}
+	
 	//---Sandbox utils
 	public EntityPlayer getPlayer() {
 		return itemInfo.getPlayer();
+	}
+	
+	public World getWorld() {
+		return getPlayer().worldObj;
+	}
+	
+	public ItemStack getStack() {
+		return itemInfo.getStack();
 	}
 	
 	public NBTTagCompound getData() {
@@ -83,4 +109,23 @@ public abstract class Action {
 	public boolean isRemote() {
 		return getPlayer().worldObj.isRemote;
 	}
+	
+	//---
+	public <T extends Action> T copy() {
+		try {
+			T ret = (T) getClass().newInstance();
+			for(Field f : getClass().getFields()) {
+				if(!f.isAnnotationPresent(CopyIgnored.class) && TypeHelper.isTypeSupported(f.getType())) {
+					TypeHelper.set(f, ret, f.get(this));
+				}
+			}
+			return ret;
+		} catch(Exception e) {
+			Weaponry.log.error("Error copying action " + getName());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public @interface CopyIgnored {}
 }

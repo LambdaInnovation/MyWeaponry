@@ -17,20 +17,24 @@ import net.minecraft.item.ItemSword;
 import cn.weaponry.api.IItemInfoProvider;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
+import cn.weaponry.api.ammo.AmmoStrategy;
+import cn.weaponry.api.ammo.ReloadStrategy;
 import cn.weaponry.api.client.render.RenderInfo;
 import cn.weaponry.api.ctrl.IItemCtrlListener;
 import cn.weaponry.api.ctrl.KeyEventType;
 import cn.weaponry.api.state.WeaponStateMachine;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author WeAthFolD
- *
  */
 public abstract class WeaponBase extends ItemSword implements IItemInfoProvider, IItemCtrlListener {
 
+	public AmmoStrategy ammoStrategy;
+	
+	public ReloadStrategy reloadStrategy;
+	
 	public WeaponBase() {
 		super(ToolMaterial.IRON);
 	}

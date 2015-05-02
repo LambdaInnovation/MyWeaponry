@@ -47,7 +47,10 @@ public class ItemInfo {
 	
 	private boolean firstUpdate = true;
 	
+	boolean iterating = false;
 	List<Action> actions = new ArrayList();
+	
+	List<Action> toAdd = new ArrayList();
 	
 	ItemInfo(EntityPlayer _player) {
 		player = _player;
@@ -72,16 +75,23 @@ public class ItemInfo {
 			((IItemInfoProvider)lastStack.getItem()).onInfoStart(this);
 		}
 		
+		if(!toAdd.isEmpty()) {
+			actions.addAll(toAdd);
+			toAdd.clear();
+		}
+		
 		//Send action events
 		Iterator<Action> iter = actions.iterator();
+		iterating = true;
 		while(iter.hasNext()) {
 			Action act = iter.next();
 			if(act.disposed) {
 				iter.remove();
 			} else {
-				act.onTick();
+				act.tickAction();
 			}
 		}
+		iterating = false;
 	}
 	
 	public void onDisposed() {
@@ -114,8 +124,13 @@ public class ItemInfo {
 		}
 		
 		action.itemInfo = this;
-		action.onStart();
-		actions.add(action);
+		action.startAction();
+		
+		if(!iterating) {
+			actions.add(action);
+		} else {
+			toAdd.add(action);
+		}
 	}
 	
 	/**
@@ -135,6 +150,10 @@ public class ItemInfo {
 	
 	public World getWorld() {
 		return getPlayer().worldObj;
+	}
+	
+	public ItemStack getStack() {
+		return lastStack;
 	}
 	
 }

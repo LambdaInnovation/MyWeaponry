@@ -17,6 +17,7 @@ import java.util.Map;
 
 import cn.weaponry.api.action.Action;
 import cn.weaponry.api.ctrl.KeyEventType;
+import cn.weaponry.core.Weaponry;
 
 /**
  * @author WeAthFolD
@@ -33,6 +34,8 @@ public class WeaponStateMachine extends Action {
 		
 		currentState = getState(name);
 		init = false;
+		
+		Weaponry.log.debug("S->" + name);
 	}
 	
 	public void addState(String name, WeaponState state) {
@@ -67,12 +70,12 @@ public class WeaponStateMachine extends Action {
 	}
 	
 	@Override
-	public void onTick() {
+	public void onTick(int tick) {
 		if(!init) {
 			currentState.enterState();
 			init  = true;
 		}
-		currentState.tickState();
+		currentState.tickState(tick);
 	}
 	
 	@Override

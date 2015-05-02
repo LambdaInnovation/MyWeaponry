@@ -12,6 +12,7 @@
  */
 package cn.weaponry.core;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,6 +53,9 @@ public class Weaponry {
 	
 	@RegMessageHandler.WrapperInstance
 	public static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(NET_CHANNEL);
+	
+	@RegItem
+	public static Item ammoTest = new Item();
 	
 	@RegItem
 	public static WeaponTest test = new WeaponTest();

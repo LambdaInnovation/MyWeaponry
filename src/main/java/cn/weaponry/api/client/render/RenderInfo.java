@@ -45,7 +45,7 @@ public class RenderInfo extends Action {
 	}
 	
 	@Override
-	public void onTick() {
+	public void onTick(int tick) {
 		Iterator<ItemRenderCallback> iter = callbacks.values().iterator();
 		while(iter.hasNext()) {
 			ItemRenderCallback irc = iter.next();

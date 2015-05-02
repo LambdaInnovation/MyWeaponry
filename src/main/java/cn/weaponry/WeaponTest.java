@@ -13,77 +13,27 @@
 package cn.weaponry;
 
 import cn.academy.core.AcademyCraft;
-import cn.weaponry.api.client.render.RenderInfo;
-import cn.weaponry.api.ctrl.KeyEventType;
-import cn.weaponry.api.item.WeaponBase;
-import cn.weaponry.api.state.WeaponState;
-import cn.weaponry.api.state.WeaponStateMachine;
+import cn.weaponry.core.Weaponry;
+import cn.weaponry.impl.classic.WeaponClassic;
 
 /**
  * @author WeAthFolD
  *
  */
-public class WeaponTest extends WeaponBase {
+public class WeaponTest extends WeaponClassic {
 	
 	public WeaponTest() {
+		super(Weaponry.ammoTest);
+		
 		setCreativeTab(AcademyCraft.cct);
 		setUnlocalizedName("ttt");
-	}
-
-	@Override
-	public void initStates(WeaponStateMachine machine) {
-		machine.addState("state1", new State1());
-		machine.addState("state2", new State2());
-		machine.setInitState("state1");
-	}
-	
-	static class State1 extends WeaponState {
-		int ticker = 0;
 		
-		public void enterState() {
-			//System.out.println("Enter state1 #" + isRemote());
-		}
+		abortSound = "weaponry:rifle_jam";
+		shootSound = "weaponry:rifle_fire";
 		
-		@Override
-		public void onCtrl(int key, KeyEventType type) {
-			System.out.println(key + " " + type + " via " + isRemote());
-		}
-		
-		public void tickState() {
-			if(++ticker == 20) {
-				ticker = 0;
-				//transitState("state2");
-			}
-		}
-		
-		public void leaveState() {
-			//System.out.println("Leave state1 #" + isRemote());
-		}
-	}
-	
-	static class State2 extends WeaponState {
-		int ticker = 0;
-		
-		public void enterState() {
-			//System.out.println("Enter state2 #" + isRemote());
-		}
-		
-		public void tickState() {
-			if(++ticker == 20) {
-				ticker = 0;
-				//transitState("state1");
-			}
-		}
-		
-		public void leaveState() {
-			//System.out.println("Leave state2 #" + isRemote());
-		}
-	}
-
-	@Override
-	public void initDefaultAnims(RenderInfo render) {
-		// TODO Auto-generated method stub
-		
+		reloadAction.startSound = "weaponry:rifle_magout";
+		reloadAction.failSound = "weaponry:rifle_jam";
+		reloadAction.endSound = "weaponry:rifle_magin";
 	}
 
 }

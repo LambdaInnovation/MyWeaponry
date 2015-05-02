@@ -13,6 +13,7 @@
 package cn.weaponry.api.state;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import cn.weaponry.api.ctrl.KeyEventType;
 
 /**
@@ -23,7 +24,7 @@ public abstract class WeaponState {
 	/**
 	 * instance injected when added into WSM.
 	 */
-	WeaponStateMachine machine;
+	protected WeaponStateMachine machine;
 	
 	public WeaponState() {}
 	
@@ -32,7 +33,7 @@ public abstract class WeaponState {
 	
 	public void leaveState() {}
 	
-	public void tickState() {}
+	public void tickState(int tick) {}
 	
 	public void onCtrl(int key, KeyEventType type) {}
 	
@@ -48,6 +49,10 @@ public abstract class WeaponState {
 	
 	public EntityPlayer player() {
 		return machine.getPlayer();
+	}
+
+	public ItemStack stack() {
+		return machine.getStack();
 	}
 	
 	public boolean isRemote() {

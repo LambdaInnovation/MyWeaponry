@@ -1,0 +1,6 @@
+{
+"rifle_fire": {"category": "master", "sounds": [{"name": "rifle_fire", "stream": false}]},
+"rifle_jam": {"category": "master", "sounds": [{"name": "rifle_jam", "stream": false}]},
+"rifle_magin": {"category": "master", "sounds": [{"name": "rifle_magin", "stream": false}]},
+"rifle_magout": {"category": "master", "sounds": [{"name": "rifle_magout", "stream": false}]}
+}
