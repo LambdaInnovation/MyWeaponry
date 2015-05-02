@@ -27,11 +27,6 @@ public abstract class Action {
 	public ItemInfo itemInfo;
 	
 	/**
-	 * Whether this action is a 'raw'(Created-not-by-sync) action. DO NOT CHANGE THIS FIELD!
-	 */
-	public boolean isRaw = true;
-	
-	/**
 	 * Whether this action is being disposed(Needs to get removed).
 	 *  Do not directly change it, use finishAction() or abortAction().
 	 */

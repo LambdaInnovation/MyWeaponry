@@ -13,6 +13,7 @@
 package cn.weaponry;
 
 import cn.academy.core.AcademyCraft;
+import cn.weaponry.api.client.render.RenderInfo;
 import cn.weaponry.api.ctrl.KeyEventType;
 import cn.weaponry.api.item.WeaponBase;
 import cn.weaponry.api.state.WeaponState;
@@ -77,6 +78,12 @@ public class WeaponTest extends WeaponBase {
 		public void leaveState() {
 			//System.out.println("Leave state2 #" + isRemote());
 		}
+	}
+
+	@Override
+	public void initDefaultAnims(RenderInfo render) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

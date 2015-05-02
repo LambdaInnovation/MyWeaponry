@@ -17,9 +17,13 @@ import net.minecraft.item.ItemSword;
 import cn.weaponry.api.IItemInfoProvider;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
+import cn.weaponry.api.client.render.RenderInfo;
 import cn.weaponry.api.ctrl.IItemCtrlListener;
 import cn.weaponry.api.ctrl.KeyEventType;
 import cn.weaponry.api.state.WeaponStateMachine;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author WeAthFolD
@@ -36,9 +40,19 @@ public abstract class WeaponBase extends ItemSword implements IItemInfoProvider,
 		WeaponStateMachine wsm = new WeaponStateMachine();
 		initStates(wsm);
 		info.addAction(wsm);
+		
+		if(info.getWorld().isRemote) { 
+			//Dispatch render info component in client side.
+			RenderInfo ri = new RenderInfo();
+			initDefaultAnims(ri);
+			info.addAction(ri);
+		}
 	}
 	
 	public abstract void initStates(WeaponStateMachine machine);
+	
+	@SideOnly(Side.CLIENT)
+	public abstract void initDefaultAnims(RenderInfo render);
 
 	@Override
 	public void onKeyEvent(EntityPlayer player, int key, KeyEventType type) {

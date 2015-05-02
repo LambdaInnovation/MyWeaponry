@@ -19,6 +19,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import cn.weaponry.api.action.Action;
 
 /**
@@ -130,6 +131,10 @@ public class ItemInfo {
 	
 	public EntityPlayer getPlayer() {
 		return player;
+	}
+	
+	public World getWorld() {
+		return getPlayer().worldObj;
 	}
 	
 }
