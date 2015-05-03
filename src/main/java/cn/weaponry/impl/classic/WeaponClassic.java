@@ -29,17 +29,17 @@ import cn.weaponry.api.item.WeaponBase;
 import cn.weaponry.api.state.WeaponState;
 import cn.weaponry.api.state.WeaponStateMachine;
 import cn.weaponry.core.blob.SoundUtils;
-import cn.weaponry.impl.classic.action.ScreenUplift;
 import cn.weaponry.impl.classic.ammo.AmmoStrategy;
 import cn.weaponry.impl.classic.ammo.ClassicAmmoStrategy;
 import cn.weaponry.impl.classic.ammo.ClassicReloadStrategy;
 import cn.weaponry.impl.classic.ammo.ReloadStrategy;
-import cn.weaponry.impl.classic.entity.EntityBullet;
 import cn.weaponry.impl.classic.event.ClassicEvents.CanReload;
 import cn.weaponry.impl.classic.event.ClassicEvents.CanShoot;
 import cn.weaponry.impl.classic.event.ClassicEvents.ReloadEvent;
 import cn.weaponry.impl.classic.event.ClassicEvents.ShootEvent;
+import cn.weaponry.impl.generic.action.ScreenUplift;
 import cn.weaponry.impl.generic.action.SwingSilencer;
+import cn.weaponry.impl.generic.entity.EntityBullet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -72,8 +72,9 @@ public class WeaponClassic extends WeaponBase {
 	public String jamSound;
 	
 	//Ammo strategies
-	//TODO
+	@LoaderExclude
 	public AmmoStrategy ammoStrategy;
+	@LoaderExclude
 	public ReloadStrategy reloadStrategy;
 	
 	//Render data

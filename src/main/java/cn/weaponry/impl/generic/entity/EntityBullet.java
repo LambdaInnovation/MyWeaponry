@@ -10,7 +10,7 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry.impl.classic.entity;
+package cn.weaponry.impl.generic.entity;
 
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;

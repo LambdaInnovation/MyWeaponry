@@ -10,7 +10,7 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry.impl.classic.action;
+package cn.weaponry.impl.generic.action;
 
 import javax.vecmath.Vector2d;
 
