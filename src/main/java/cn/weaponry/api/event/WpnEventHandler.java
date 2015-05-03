@@ -10,29 +10,26 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry.impl.classic.action;
+package cn.weaponry.api.event;
 
-import cn.weaponry.api.action.InstantAction;
-import cn.weaponry.impl.classic.entity.EntityBullet;
+import cn.weaponry.api.ItemInfo;
+import cpw.mods.fml.common.eventhandler.Event;
 
 /**
  * @author WeAthFolD
  */
-public class ClassicShoot extends InstantAction {
+public abstract class WpnEventHandler {
+
+	private final Class<? extends Event> handledEvent;
 	
-	public int damage = 5;
-	public int scatter = 10;
-
-	@Override
-	public String getName() {
-		return "ClassicShoot";
+	public WpnEventHandler(Class<? extends Event> klass) {
+		handledEvent = klass;
 	}
-
-	@Override
-	public void execute() {
-		if(!isRemote()) {
-			getWorld().spawnEntityInWorld(new EntityBullet(getPlayer(), scatter, damage));
-		}
+	
+	public abstract void handleEvent(ItemInfo item, Event event);
+	
+	public Class<?> getHandledEvent() {
+		return handledEvent;
 	}
-
+	
 }

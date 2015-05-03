@@ -26,8 +26,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * The class handling ItemInfo loading.
@@ -134,6 +136,7 @@ public class ItemInfoProxy {
 	public static class Ticker {
 		
 		@SubscribeEvent
+		@SideOnly(Side.CLIENT)
 		public void onClientTick(ClientTickEvent event) {
 			if(event.phase == Phase.END)
 				return;
@@ -154,6 +157,17 @@ public class ItemInfoProxy {
 				getProxy().getInfo(player);
 			}
 			getProxy().tick(false);
+		}
+		
+		@SubscribeEvent
+		@SideOnly(Side.CLIENT)
+		public void onRenderTick(RenderTickEvent event) {
+			if(Minecraft.getMinecraft().thePlayer == null || event.phase == Phase.END)
+				return;
+			ItemInfo info = getProxy().getInfo(Minecraft.getMinecraft().thePlayer);
+			if(info != null) {
+				info.renderTick();
+			}
 		}
 		
 	}

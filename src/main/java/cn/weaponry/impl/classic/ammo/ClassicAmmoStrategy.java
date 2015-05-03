@@ -15,7 +15,6 @@ package cn.weaponry.impl.classic.ammo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cn.liutils.util.GenericUtils;
-import cn.weaponry.api.ammo.AmmoStrategy;
 
 /**
  * @author WeAthFolD
@@ -45,8 +44,10 @@ public class ClassicAmmoStrategy implements AmmoStrategy {
 
 	@Override
 	public boolean consumeAmmo(EntityPlayer player, ItemStack stack, int amt) {
+		if(player.capabilities.isCreativeMode)
+			return true;
 		int ammo = getAmmo(stack);
-		if(ammo > amt)
+		if(ammo < amt)
 			return false;
 		setAmmo(stack, ammo - amt);
 		return true;
@@ -55,6 +56,11 @@ public class ClassicAmmoStrategy implements AmmoStrategy {
 	@Override
 	public String getDescription(ItemStack stack) {
 		return getAmmo(stack) + "/" + getMaxAmmo(stack);
+	}
+
+	@Override
+	public boolean canConsume(EntityPlayer player, ItemStack stack, int amt) {
+		return player.capabilities.isCreativeMode || getAmmo(stack) > amt;
 	}
 
 }

@@ -10,31 +10,27 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry;
+package cn.weaponry.impl.classic.ammo;
 
-import cn.academy.core.AcademyCraft;
-import cn.weaponry.core.Weaponry;
-import cn.weaponry.impl.classic.WeaponClassic;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 /**
+ * A ammo handling strategy representing 1-slot ammo structure.
  * @author WeAthFolD
- *
  */
-public class WeaponTest extends WeaponClassic {
+public interface AmmoStrategy {
 	
-	public WeaponTest() {
-		super(Weaponry.ammoTest);
-		
-		setCreativeTab(AcademyCraft.cct);
-		setUnlocalizedName("ttt");
-		
-		shootSound = "weaponry:rifle_fire";
-		
-		reloadStartSound = "weaponry:rifle_magout";
-		reloadAbortSound = "weaponry:rifle_jam";
-		reloadEndSound = "weaponry:rifle_magin";
-		
-		jamSound = "weaponry:rifle_jam";
-	}
-
+	int getAmmo(ItemStack stack);
+	
+	int getMaxAmmo(ItemStack stack);
+	
+	void setAmmo(ItemStack stack, int n);
+	
+	boolean canConsume(EntityPlayer player, ItemStack stack, int amt);
+	
+	boolean consumeAmmo(EntityPlayer player, ItemStack stack, int amt);
+	
+	String getDescription(ItemStack stack);
+	
 }

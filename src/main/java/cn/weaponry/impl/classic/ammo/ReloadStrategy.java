@@ -1,4 +1,4 @@
-package cn.weaponry.api.ammo;
+package cn.weaponry.impl.classic.ammo;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

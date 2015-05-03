@@ -10,31 +10,18 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry;
+package cn.weaponry.api.event;
 
-import cn.academy.core.AcademyCraft;
-import cn.weaponry.core.Weaponry;
-import cn.weaponry.impl.classic.WeaponClassic;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author WeAthFolD
- *
  */
-public class WeaponTest extends WeaponClassic {
-	
-	public WeaponTest() {
-		super(Weaponry.ammoTest);
-		
-		setCreativeTab(AcademyCraft.cct);
-		setUnlocalizedName("ttt");
-		
-		shootSound = "weaponry:rifle_fire";
-		
-		reloadStartSound = "weaponry:rifle_magout";
-		reloadAbortSound = "weaponry:rifle_jam";
-		reloadEndSound = "weaponry:rifle_magin";
-		
-		jamSound = "weaponry:rifle_jam";
-	}
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface WeaponCallback {
 
 }

@@ -14,6 +14,7 @@ package cn.weaponry.impl.classic.action;
 
 import javax.vecmath.Vector2d;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import cn.liutils.util.GenericUtils;
 import cn.weaponry.api.action.Action;
@@ -28,20 +29,24 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ScreenUplift extends Action {
 	
 	//TODO: Open up the rad limit?
-	public double upliftRadius = 10; //Expected uplift radius. For better experience use RangeRandom(rad*0.8, rad*1.2).
-	public double recoverSpeed = 4; //Angle recover speed, unit: deg/tick
+	public double upliftRadius = 5; //Expected uplift radius. For better experience use RangeRandom(rad*0.8, rad*1.2).
+	
+	public double upliftSpeed = 5; //Uplift speed, unit: deg/tick
+	public double recoverSpeed = 1; //Angle recover speed, unit: deg/tick
 	
 	public double degreeFrom = 30, degreeTo = 150; //The allowed "uplift" vector scatter range, in degrees.
 	
 	private Vector2d dir;
 	private double uplift;
 	
-	private int tick = 0, maxTick;
+	private double changedAngles = 0.0;
 
 	@Override
 	public String getName() {
 		return "Uplift";
 	}
+	
+	boolean recovering = false;
 	
 	@Override
 	public void onStart() {
@@ -51,20 +56,43 @@ public class ScreenUplift extends Action {
 		uplift = GenericUtils.randIntv(0.8, 1.2) * upliftRadius;
 		
 		EntityPlayer player = getPlayer();
-		player.rotationYaw += dir.y * uplift;
-		player.rotationPitch += dir.x * uplift;
 		
-		maxTick = (int) Math.round(uplift / recoverSpeed);
+		//lastRecoverTime = Minecraft.getSystemTime();
 	}
 	
 	@Override
-	public void onTick(int tick) {
+	public void onRenderTick() {
 		EntityPlayer player = getPlayer();
-		player.rotationYaw -= dir.y * recoverSpeed;
-		player.rotationPitch -= dir.x * recoverSpeed;
+		long dt = itemInfo.getDeltaTime();
 		
-		if(++tick == maxTick) {
-			this.disposed = true;
+		if(!recovering) {
+			double change = upliftSpeed * dt / 50.0;
+			if(changedAngles + change > uplift) {
+				change = uplift - changedAngles;
+//				System.out.println("UE" + change + " " + changedAngles);
+				
+				player.rotationYaw += dir.y * change;
+				player.rotationPitch -= dir.x * change;
+				
+				changedAngles = 0;
+				recovering = true;
+			} else {
+//				System.out.println("U " + change + " " + changedAngles);
+				player.rotationYaw += dir.y * change;
+				player.rotationPitch -= dir.x * change;
+				changedAngles += change;
+			}
+			
+		} else {
+			double change = recoverSpeed * dt / 50.0;
+			if(changedAngles + change > uplift) {
+				change = uplift - changedAngles;
+				disposed = true;
+//				System.out.println("RE" + change + " " + changedAngles);
+			}
+			player.rotationYaw -= dir.y * change;
+			player.rotationPitch += dir.x * change;
+			changedAngles += change;
 		}
 	}
 

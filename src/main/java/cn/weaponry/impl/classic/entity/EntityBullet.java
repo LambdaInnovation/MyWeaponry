@@ -19,12 +19,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import cn.academy.core.entityx.EntityAdvanced;
-import cn.academy.core.entityx.event.CollideEvent;
-import cn.academy.core.entityx.event.CollideEvent.CollideHandler;
-import cn.academy.core.entityx.handlers.Rigidbody;
 import cn.annoreg.core.RegistrationClass;
 import cn.annoreg.mc.RegEntity;
+import cn.liutils.entityx.EntityAdvanced;
+import cn.liutils.entityx.event.CollideEvent;
+import cn.liutils.entityx.event.CollideEvent.CollideHandler;
+import cn.liutils.entityx.handlers.Rigidbody;
 import cn.liutils.util.space.Motion3D;
 
 /**
@@ -35,7 +35,7 @@ import cn.liutils.util.space.Motion3D;
 @RegEntity
 public class EntityBullet extends EntityAdvanced {
 	
-	static final double VELOCITY = 20.0;
+	static final double VELOCITY = 40.0;
 	
 	float damage;
 	
@@ -56,7 +56,6 @@ public class EntityBullet extends EntityAdvanced {
 		this.regEventHandler(new CollideHandler() {
 			@Override
 			public void onEvent(CollideEvent event) {
-				System.out.println("CollideEvent" + event.result.typeOfHit + " " + event.result.entityHit);
 				if(event.result.typeOfHit == MovingObjectType.ENTITY) {
 					event.result.entityHit.attackEntityFrom(DamageSource.causePlayerDamage(spawner), damage);
 				}

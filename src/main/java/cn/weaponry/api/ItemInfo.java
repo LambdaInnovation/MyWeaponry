@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -92,6 +93,20 @@ public class ItemInfo {
 			}
 		}
 		iterating = false;
+	}
+	
+	long lastTime;
+	
+	public void renderTick() {
+		for(Action act : actions) {
+			if(!act.disposed)
+				act.onRenderTick();
+		}
+		lastTime = Minecraft.getSystemTime();
+	}
+	
+	public long getDeltaTime() {
+		return Minecraft.getSystemTime() - lastTime;
 	}
 	
 	public void onDisposed() {

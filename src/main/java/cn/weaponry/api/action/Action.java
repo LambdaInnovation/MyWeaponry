@@ -54,6 +54,8 @@ public abstract class Action {
 	
 	public void onTick(int tick) {}
 	
+	public void onRenderTick() {}
+	
 	public void onNormalEnd() {}
 	
 	public void onAborted() {}
@@ -108,6 +110,10 @@ public abstract class Action {
 	
 	public boolean isRemote() {
 		return getPlayer().worldObj.isRemote;
+	}
+	
+	public int getTick() {
+		return tick;
 	}
 	
 	//---

@@ -14,7 +14,10 @@ package cn.weaponry.api.state;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ctrl.KeyEventType;
+import cn.weaponry.api.item.WeaponBase;
 
 /**
  * @author WeAthFolD
@@ -47,12 +50,24 @@ public abstract class WeaponState {
 		return machine;
 	}
 	
-	public EntityPlayer player() {
+	public EntityPlayer getPlayer() {
 		return machine.getPlayer();
 	}
 
-	public ItemStack stack() {
+	public ItemStack getStack() {
 		return machine.getStack();
+	}
+	
+	public ItemInfo getItem() {
+		return machine.itemInfo;
+	}
+	
+	public World getWorld() {
+		return machine.getWorld();
+	}
+	
+	public <T extends WeaponBase> T getWeapon() {
+		return (T) getStack().getItem();
 	}
 	
 	public boolean isRemote() {

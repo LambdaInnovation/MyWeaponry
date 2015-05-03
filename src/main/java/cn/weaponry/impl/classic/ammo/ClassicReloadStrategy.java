@@ -15,9 +15,7 @@ package cn.weaponry.impl.classic.ammo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import cn.weaponry.api.ammo.AmmoStrategy;
-import cn.weaponry.api.ammo.ReloadStrategy;
-import cn.weaponry.api.item.WeaponBase;
+import cn.weaponry.impl.classic.WeaponClassic;
 
 /**
  * @author WeAthFolD
@@ -33,7 +31,7 @@ public class ClassicReloadStrategy implements ReloadStrategy {
 
 	@Override
 	public boolean canReload(EntityPlayer player, ItemStack stack) {
-		WeaponBase weapon = (WeaponBase) stack.getItem();
+		WeaponClassic weapon = (WeaponClassic) stack.getItem();
 		AmmoStrategy ammoStrategy = weapon.ammoStrategy;
 		if(ammoStrategy.getAmmo(stack) == ammoStrategy.getMaxAmmo(stack)) {
 			return false;
@@ -49,7 +47,7 @@ public class ClassicReloadStrategy implements ReloadStrategy {
 
 	@Override
 	public void doReload(EntityPlayer player, ItemStack stack) {
-		WeaponBase weapon = (WeaponBase) stack.getItem();
+		WeaponClassic weapon = (WeaponClassic) stack.getItem();
 		AmmoStrategy ammoStrategy = weapon.ammoStrategy;
 		
 		int need = ammoStrategy.getMaxAmmo(stack) - ammoStrategy.getAmmo(stack);

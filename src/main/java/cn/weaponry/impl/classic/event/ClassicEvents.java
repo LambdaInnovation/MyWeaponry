@@ -10,25 +10,25 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry.api.ammo;
+package cn.weaponry.impl.classic.event;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 /**
- * A ammo handling strategy representing 1-slot ammo structure.
  * @author WeAthFolD
+ *
  */
-public interface AmmoStrategy {
+public class ClassicEvents {
 	
-	int getAmmo(ItemStack stack);
+	@Cancelable
+	public static  class CanReload extends Event {}
 	
-	int getMaxAmmo(ItemStack stack);
+	@Cancelable
+	public static class CanShoot extends Event {}
 	
-	void setAmmo(ItemStack stack, int n);
+	public static class ReloadEvent extends Event {}
 	
-	boolean consumeAmmo(EntityPlayer player, ItemStack stack, int amt);
-	
-	String getDescription(ItemStack stack);
+	public static class ShootEvent extends Event {}
 	
 }

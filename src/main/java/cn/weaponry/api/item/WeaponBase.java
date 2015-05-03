@@ -12,17 +12,22 @@
  */
 package cn.weaponry.api.item;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
 import cn.weaponry.api.IItemInfoProvider;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
-import cn.weaponry.api.ammo.AmmoStrategy;
-import cn.weaponry.api.ammo.ReloadStrategy;
 import cn.weaponry.api.client.render.RenderInfo;
 import cn.weaponry.api.ctrl.IItemCtrlListener;
 import cn.weaponry.api.ctrl.KeyEventType;
+import cn.weaponry.api.event.WpnEventHandler;
 import cn.weaponry.api.state.WeaponStateMachine;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,13 +35,25 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author WeAthFolD
  */
 public abstract class WeaponBase extends ItemSword implements IItemInfoProvider, IItemCtrlListener {
-
-	public AmmoStrategy ammoStrategy;
 	
-	public ReloadStrategy reloadStrategy;
+	private Map< Class<?>, List<WpnEventHandler> > handledEvents = new HashMap();
 	
 	public WeaponBase() {
 		super(ToolMaterial.IRON);
+	}
+	
+	public abstract void initStates(WeaponStateMachine machine);
+	
+	@SideOnly(Side.CLIENT)
+	public abstract void initDefaultAnims(RenderInfo render);
+	
+	@Override
+	public void onKeyEvent(EntityPlayer player, int key, KeyEventType type) {
+		ItemInfo info = ItemInfoProxy.getInfo(player);
+		WeaponStateMachine wsm = info.getAction("StateMachine");
+		if(wsm != null) {
+			wsm.onCtrl(key, type);
+		}
 	}
 
 	@Override
@@ -53,18 +70,29 @@ public abstract class WeaponBase extends ItemSword implements IItemInfoProvider,
 		}
 	}
 	
-	public abstract void initStates(WeaponStateMachine machine);
+	//Very simple event bus
+	public void regEventHandler(WpnEventHandler handler) {
+		lazy(handler.getHandledEvent()).add(handler);
+	}
 	
-	@SideOnly(Side.CLIENT)
-	public abstract void initDefaultAnims(RenderInfo render);
-
-	@Override
-	public void onKeyEvent(EntityPlayer player, int key, KeyEventType type) {
-		ItemInfo info = ItemInfoProxy.getInfo(player);
-		WeaponStateMachine wsm = info.getAction("StateMachine");
-		if(wsm != null) {
-			wsm.onCtrl(key, type);
+	public boolean post(ItemInfo item, Event event) {
+		List<WpnEventHandler> list = handledEvents.get(event.getClass());
+		if(list != null) {
+			for(WpnEventHandler handler : list) {
+				handler.handleEvent(item, event);
+			}
+			return !event.isCanceled();
 		}
+		return true;
+	}
+	
+	private List<WpnEventHandler> lazy(Class<?> klass) {
+		List<WpnEventHandler> ret = handledEvents.get(klass);
+		if(ret == null) {
+			ret = new ArrayList();
+			handledEvents.put(klass, ret);
+		}
+		return ret;
 	}
 	
 }

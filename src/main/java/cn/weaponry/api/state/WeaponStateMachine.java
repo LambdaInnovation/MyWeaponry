@@ -26,6 +26,8 @@ public class WeaponStateMachine extends Action {
 	
 	Map<String, WeaponState> states = new HashMap();
 	
+	int startTick = 0;
+	
 	WeaponState currentState = null;
 	boolean init = false;
 
@@ -34,8 +36,8 @@ public class WeaponStateMachine extends Action {
 		
 		currentState = getState(name);
 		init = false;
-		
-		Weaponry.log.debug("S->" + name);
+		startTick = this.getTick();
+		//Weaponry.log.info("S->" + name + " #" + isRemote());
 	}
 	
 	public void addState(String name, WeaponState state) {
@@ -61,6 +63,10 @@ public class WeaponStateMachine extends Action {
 		return states.get(name);
 	}
 	
+	public boolean hasState(String name) {
+		return states.containsKey(name);
+	}
+	
 	public void onCtrl(int keyID, KeyEventType type) {
 		if(type == KeyEventType.ABORT) {
 			abortAction();
@@ -73,9 +79,10 @@ public class WeaponStateMachine extends Action {
 	public void onTick(int tick) {
 		if(!init) {
 			currentState.enterState();
+			startTick = tick;
 			init  = true;
 		}
-		currentState.tickState(tick);
+		currentState.tickState(tick - startTick);
 	}
 	
 	@Override
