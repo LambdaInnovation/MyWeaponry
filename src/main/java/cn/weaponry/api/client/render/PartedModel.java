@@ -41,6 +41,7 @@ public abstract class PartedModel {
 	public void renderAll() {
 		for(String s : transformData.keySet()) {
 			renderPart(s);
+			//System.out.println("render part " + s);
 		}
 	}
 	

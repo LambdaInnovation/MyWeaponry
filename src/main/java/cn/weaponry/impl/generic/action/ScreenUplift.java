@@ -29,12 +29,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ScreenUplift extends Action {
 	
 	//TODO: Open up the rad limit?
-	public double upliftRadius = 5; //Expected uplift radius. For better experience use RangeRandom(rad*0.8, rad*1.2).
+	public double upliftRadius = 4; //Expected uplift radius. For better experience use RangeRandom(rad*0.8, rad*1.2).
 	
-	public double upliftSpeed = 5; //Uplift speed, unit: deg/tick
-	public double recoverSpeed = 1; //Angle recover speed, unit: deg/tick
+	public double upliftSpeed = 2.5; //Uplift speed, unit: deg/tick
+	public double recoverSpeed = 0.15; //Angle recover speed, unit: deg/tick
 	
-	public double degreeFrom = 30, degreeTo = 150; //The allowed "uplift" vector scatter range, in degrees.
+	public double degreeFrom = 50, degreeTo = 130; //The allowed "uplift" vector scatter range, in degrees.
 	
 	private Vector2d dir;
 	private double uplift;

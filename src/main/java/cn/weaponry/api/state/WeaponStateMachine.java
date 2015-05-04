@@ -37,7 +37,7 @@ public class WeaponStateMachine extends Action {
 		currentState = getState(name);
 		init = false;
 		startTick = this.getTick();
-		//Weaponry.log.info("S->" + name + " #" + isRemote());
+		Weaponry.log.info("S->" + name + " #" + isRemote());
 	}
 	
 	public void addState(String name, WeaponState state) {

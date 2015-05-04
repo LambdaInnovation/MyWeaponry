@@ -29,7 +29,7 @@ import cn.weaponry.api.client.render.RenderInfo.ItemRenderCallback;
  * @author WeAthFolD
  *
  */
-public class RendererWeaponBase implements IItemRenderer {
+public class RendererWeapon implements IItemRenderer {
 	
 	//TODO: Data heavy, use json to load those data
 	CompTransform 
@@ -41,7 +41,7 @@ public class RendererWeaponBase implements IItemRenderer {
 	final PartedModel model;
 	final ResourceLocation texture;
 	
-	public RendererWeaponBase(PartedModel _model, ResourceLocation _texture) {
+	public RendererWeapon(PartedModel _model, ResourceLocation _texture) {
 		model = _model;
 		texture = _texture;
 	}
@@ -84,6 +84,16 @@ public class RendererWeaponBase implements IItemRenderer {
 				irc.onRender(info.itemInfo, model, firstPerson);
 			}
 			RenderUtils.loadTexture(texture);
+			
+			if(firstPerson) {
+				doFirstPersonTansform();
+				fpTransform.doTransform();
+			} else {
+				doThirdPersonTransform();
+				tpTransform.doTransform();
+			}
+			stdTransform.doTransform();
+			doFixedTransform();
 			model.renderAll();
 			
 			model.popTransformState();
@@ -95,10 +105,24 @@ public class RendererWeaponBase implements IItemRenderer {
 		GL11.glPushMatrix(); 
 		{
 			stdTransform.doTransform();
+			doFixedTransform();
 			RenderUtils.loadTexture(texture);
 			model.renderAll();
 		} 
 		GL11.glPopMatrix();
+	}
+	
+	private void doFirstPersonTansform() {
+		GL11.glTranslated(-.3, 0, 0);
+	}
+//	
+	private void doThirdPersonTransform() {
+		
+	}
+	
+	private void doFixedTransform() {
+		GL11.glRotated(35, 0, 0, 1);
+		GL11.glTranslated(0.8, -.12, 0);
 	}
 
 }

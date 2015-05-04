@@ -62,7 +62,7 @@ public class WeaponControllerClient {
 	}
 	
 	@RegNetworkCall(side = Side.SERVER)
-	public static void serverSendEvent(
+	static void serverSendEvent(
 		@StorageOption.Instance EntityPlayer player,
 		@StorageOption.Data Byte keyID,
 		@StorageOption.Instance SyncEventType type) {

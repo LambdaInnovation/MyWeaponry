@@ -13,6 +13,9 @@
 package cn.weaponry.core;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +28,8 @@ import cn.annoreg.mc.RegItem;
 import cn.annoreg.mc.RegMessageHandler;
 import cn.liutils.core.LIUtils;
 import cn.weaponry.WeaponTest;
+import cn.weaponry.api.client.render.PartedObjModel;
+import cn.weaponry.api.client.render.RendererWeapon;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -53,12 +58,6 @@ public class Weaponry {
 	
 	@RegMessageHandler.WrapperInstance
 	public static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(NET_CHANNEL);
-	
-	@RegItem
-	public static Item ammoTest = new Item();
-	
-	@RegItem
-	public static WeaponTest test = new WeaponTest();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {

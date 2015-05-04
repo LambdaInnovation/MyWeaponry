@@ -48,10 +48,13 @@ public class EntityBullet extends EntityAdvanced {
 		damage = dmg;
 		Motion3D m3d = new Motion3D(player, scatter, true);
 		
-		m3d.motionX *= VELOCITY;
-		m3d.motionY *= VELOCITY;
-		m3d.motionZ *= VELOCITY;
+		m3d.normalize();
+		double vel = 3;
 		m3d.applyToEntity(this);
+		motionX = m3d.motionX * vel;
+		motionY = m3d.motionY * vel;
+		motionZ = m3d.motionZ * vel;
+		
 		
 		this.regEventHandler(new CollideHandler() {
 			@Override

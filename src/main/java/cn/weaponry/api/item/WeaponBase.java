@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.world.World;
 import cn.weaponry.api.IItemInfoProvider;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
@@ -46,6 +48,11 @@ public abstract class WeaponBase extends ItemSword implements IItemInfoProvider,
 	
 	@SideOnly(Side.CLIENT)
 	public abstract void initDefaultAnims(RenderInfo render);
+	
+	@Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    	return stack;
+    }
 	
 	@Override
 	public void onKeyEvent(EntityPlayer player, int key, KeyEventType type) {

@@ -13,8 +13,12 @@
 package cn.weaponry;
 
 import cn.academy.core.AcademyCraft;
-import cn.weaponry.core.Weaponry;
+import cn.weaponry.api.ctrl.KeyEventType;
+import cn.weaponry.api.state.WeaponState;
+import cn.weaponry.api.state.WeaponStateMachine;
+import cn.weaponry.core.TestItems;
 import cn.weaponry.impl.classic.WeaponClassic;
+import cn.weaponry.impl.generic.action.SwingSilencer;
 
 /**
  * @author WeAthFolD
@@ -23,7 +27,7 @@ import cn.weaponry.impl.classic.WeaponClassic;
 public class WeaponTest extends WeaponClassic {
 	
 	public WeaponTest() {
-		super(Weaponry.ammoTest);
+		super(TestItems.ammoTest);
 		
 		setCreativeTab(AcademyCraft.cct);
 		setUnlocalizedName("ttt");
@@ -35,6 +39,43 @@ public class WeaponTest extends WeaponClassic {
 		reloadEndSound = "weaponry:rifle_magin";
 		
 		jamSound = "weaponry:rifle_jam";
+		
+		this.shootInterval = 3;
+	}
+	
+	@Override
+	public void initStates(WeaponStateMachine machine) {
+		super.initStates(machine);
+		machine.addState("action", new StateStockAttack());
+	}
+	
+	public static class StateStockAttack extends WeaponState {
+		public void enterState() {
+			SwingSilencer silencer = getItem().getAction("SwingSilencer");
+			if(silencer != null) {
+				silencer.active = false;
+			}
+			getPlayer().swingItem();
+		}
+		
+		@Override
+		public void onCtrl(int key, KeyEventType type) {
+			//transitState("idle");
+		}
+		
+		@Override
+		public void tickState(int ticks) {
+			if(ticks == 15) {
+				transitState("idle");
+			}
+		}
+		
+ 		public void leaveState() {
+			SwingSilencer silencer = getItem().getAction("SwingSilencer");
+			if(silencer != null) {
+				silencer.active = true;
+			}
+		}
 	}
 
 }
