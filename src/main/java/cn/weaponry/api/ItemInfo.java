@@ -34,7 +34,7 @@ import cn.weaponry.api.action.Action;
  */
 public class ItemInfo {
 	
-	private final EntityPlayer player;
+	public final EntityPlayer player;
 	private final int slot;
 	
 	private ItemStack lastStack;
@@ -46,7 +46,7 @@ public class ItemInfo {
 	 */
 	public boolean disposed;
 	
-	private boolean firstUpdate = true;
+	//private boolean firstUpdate = true;
 	
 	boolean iterating = false;
 	List<Action> actions = new ArrayList();
@@ -62,6 +62,7 @@ public class ItemInfo {
 			disposed = true;
 		}
 		
+		((IItemInfoProvider)lastStack.getItem()).onInfoStart(this);
 		//System.out.println("Created ItemInfo");
 	}
 	
@@ -71,22 +72,19 @@ public class ItemInfo {
 		if(disposed)
 			return;
 		
-		if(firstUpdate) {
-			firstUpdate = false;
-			((IItemInfoProvider)lastStack.getItem()).onInfoStart(this);
-		}
-		
 		if(!toAdd.isEmpty()) {
 			actions.addAll(toAdd);
 			toAdd.clear();
 		}
 		
 		//Send action events
+		
 		Iterator<Action> iter = actions.iterator();
 		iterating = true;
 		while(iter.hasNext()) {
 			Action act = iter.next();
 			if(act.disposed) {
+				//System.err.println("Disposed " + act);
 				iter.remove();
 			} else {
 				act.tickAction();

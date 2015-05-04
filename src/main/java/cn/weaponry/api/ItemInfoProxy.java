@@ -56,14 +56,16 @@ public class ItemInfoProxy {
 			
 			if(playerInfo != null) {
 				playerInfo.checkStack();
+				
 				if(playerInfo.disposed) {
 					playerInfo.onDisposed();
 					playerInfo = null;
 				}
 			}
-			if(playerInfo == null || playerInfo.getPlayer() != player) {
-				playerInfo = null;
+			
+			if(playerInfo == null) {
 				ItemStack stack = player.getCurrentEquippedItem();
+				
 				if(stack != null && stack.getItem() instanceof IItemInfoProvider) {
 					//Type safe is guaranteed.
 					playerInfo = new ItemInfo(player);
@@ -142,7 +144,7 @@ public class ItemInfoProxy {
 				return;
 			if(Minecraft.getMinecraft().thePlayer == null)
 				return;
-			//System.out.println("running on client");
+			
 			getProxy().getInfo(Minecraft.getMinecraft().thePlayer);
 			getProxy().tick(true);
 		}
@@ -151,7 +153,7 @@ public class ItemInfoProxy {
 		public void onServerTick(ServerTickEvent event) {
 			if(event.phase == Phase.END)
 				return;
-			//System.out.println("running on server");
+			
 			for(Object p : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 				EntityPlayer player = (EntityPlayer) p;
 				getProxy().getInfo(player);
@@ -164,6 +166,7 @@ public class ItemInfoProxy {
 		public void onRenderTick(RenderTickEvent event) {
 			if(Minecraft.getMinecraft().thePlayer == null || event.phase == Phase.END)
 				return;
+			
 			ItemInfo info = getProxy().getInfo(Minecraft.getMinecraft().thePlayer);
 			if(info != null) {
 				info.renderTick();

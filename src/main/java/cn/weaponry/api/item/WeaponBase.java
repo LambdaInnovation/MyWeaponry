@@ -58,6 +58,7 @@ public abstract class WeaponBase extends ItemSword implements IItemInfoProvider,
 	public void onKeyEvent(EntityPlayer player, int key, KeyEventType type) {
 		ItemInfo info = ItemInfoProxy.getInfo(player);
 		WeaponStateMachine wsm = info.getAction("StateMachine");
+		//System.out.println("BasicKeyEvent " + wsm); 
 		if(wsm != null) {
 			wsm.onCtrl(key, type);
 		}
