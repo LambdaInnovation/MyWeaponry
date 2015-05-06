@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.Item;
+import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.ItemLoadRule;
 import cn.liutils.loading.item.ItemLoader;
-import cn.weaponry.core.Weaponry;
 import cn.weaponry.impl.classic.WeaponClassic;
 import cn.weaponry.impl.generic.action.ScreenUplift;
 
@@ -51,23 +51,23 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 	}
 
 	@Override
-	public void load(WeaponClassic item, ItemLoader loader, String name) throws Exception {
+	public void load(WeaponClassic item, ObjectNamespace ns, String name) throws Exception {
 		for(Field f : ints) {
-			Integer i = loader.getInt(name, "weapon", f.getName());
+			Integer i = ns.getInt("weapon", f.getName());
 			if(i != null) {
 				f.set(item, (int)i);
 			}
 		}
 		
 		for(Field f : strs) {
-			String s = loader.getString(name, "weapon", f.getName());
+			String s = ns.getString("weapon", f.getName());
 			if(s != null) {
 				f.set(item, s);
 			}
 		}
 		
 		for(Field f : booleans) {
-			Boolean b = loader.getBoolean(name, "weapon", f.getName());
+			Boolean b = ns.getBoolean("weapon", f.getName());
 			if(b != null) {
 				f.set(item, (boolean)b);
 			}
@@ -75,7 +75,7 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 		
 		String[] ul = { "upliftRadius", "upliftSpeed", "recoverSpeed", "degreeFrom", "degreeTo" };
 		for(String prop : ul) {
-			Double d = loader.getDouble(name, "weapon", "uplift", prop);
+			Double d = ns.getDouble("weapon", "uplift", prop);
 			if(d != null) {
 				ScreenUplift.class.getField(prop).set(item.screenUplift, d);
 			}

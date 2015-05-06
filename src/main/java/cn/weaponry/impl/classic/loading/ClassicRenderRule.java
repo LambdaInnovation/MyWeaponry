@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.WavefrontObject;
+import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.ItemLoadRule;
 import cn.liutils.loading.item.ItemLoader;
 import cn.weaponry.api.client.render.CompTransform;
@@ -31,14 +32,14 @@ import cn.weaponry.impl.classic.WeaponClassic;
 public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 	
 	protected WeaponClassic item;
-	protected ItemLoader loader;
+	protected ObjectNamespace ns;
 	protected String name;
 
 	@Override
-	public void load(WeaponClassic item, ItemLoader loader, String name)
+	public void load(WeaponClassic item, ObjectNamespace ns, String name)
 			throws Exception {
 		this.item = item;
-		this.loader = loader;
+		this.ns = ns;
 		this.name = name;
 		
 		WavefrontObject obj = loadModel(); //Currently just support the .obj
@@ -58,11 +59,11 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 	}
 	
 	protected WavefrontObject loadModel() {
-		return new WavefrontObject(new ResourceLocation(loader.getString(name, "render", "model")));
+		return new WavefrontObject(new ResourceLocation(ns.getString("render", "model")));
 	}
 	
 	protected ResourceLocation loadTexture() {
-		return new ResourceLocation(loader.getString(name, "render", "texture"));
+		return new ResourceLocation(ns.getString("render", "texture"));
 	}
 	
 	protected void lookComp(RendererWeapon render, CompTransform ct, String compName) {
@@ -81,7 +82,7 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		vec = lookVector("render", compName, "rotation");
 		if(vec != null) ct.rotation = vec;
 		
-		Double scale = loader.getDouble(name, "render", "scale");
+		Double scale = ns.getDouble("render", "scale");
 		if(scale != null) ct.scale = scale;
 	}
 	
@@ -91,13 +92,13 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		Double x, y, z;
 		
 		look[base.length] = "x";
-		x = loader.getDouble(name, look);
+		x = ns.getDouble(look);
 		
 		look[base.length] = "y";
-		y = loader.getDouble(name, look);
+		y = ns.getDouble(look);
 		
 		look[base.length] = "z";
-		z = loader.getDouble(name, look);
+		z = ns.getDouble(look);
 		
 		if(x != null && y != null && z != null)
 			return Vec3.createVectorHelper(x, y, z);
