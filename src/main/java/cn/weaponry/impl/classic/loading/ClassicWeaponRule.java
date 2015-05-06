@@ -25,7 +25,7 @@ import cn.weaponry.impl.classic.WeaponClassic;
 import cn.weaponry.impl.generic.action.ScreenUplift;
 
 /**
- * Rules:All the fields in WeaponClassic marked as public. + the uplift action.
+ * Rules:Any field in WeaponClassic that is marked as public. Plus the uplift action.
  * 
  * @author WeAthFolD <br/>
  */
@@ -80,6 +80,8 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 				ScreenUplift.class.getField(prop).set(item.screenUplift, d);
 			}
 		}
+		
+		item.finishInit();
 	}
 	
 	@Override

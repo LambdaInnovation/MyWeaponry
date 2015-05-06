@@ -84,6 +84,8 @@ public class WeaponControllerClient {
 		
 		int ticker;
 		
+		int tickSendCounter = 0;
+		
 		public KeyHandler(int i) {
 			virtualKey = i;
 		}
@@ -142,28 +144,22 @@ public class WeaponControllerClient {
 		
 		private void doKeyTick() {
 			if(keyDown) {
-				sendEvent(SyncEventType.KEEPALIVE);
+				if(++tickSendCounter == 5) { //Only send once per 5 ticks~
+					tickSendCounter = 0;
+					sendEvent(SyncEventType.KEEPALIVE);
+				}
 				ticker = 0;
 			}
 		}
-		
-		int tickSendCounter = 0;
 		
 		private void sendEvent(SyncEventType type) {
 			//Check player
 			if(Minecraft.getMinecraft().thePlayer == null)
 				return;
 			
-			localSendEvent(Minecraft.getMinecraft().thePlayer, virtualKey, type);
+			localSendEvent(Minecraft.getMinecraft().thePlayer, virtualKey, type); //Dispatch to Client
 			
-			if(type == SyncEventType.KEEPALIVE) {
-				if(++tickSendCounter == 5) { //Only send once per 5 ticks~
-					tickSendCounter = 0;
-					serverSendEvent(Minecraft.getMinecraft().thePlayer, (byte) virtualKey, SyncEventType.KEEPALIVE);
-				}
-			} else {
-				serverSendEvent(Minecraft.getMinecraft().thePlayer, (byte) virtualKey, type);
-			}
+			serverSendEvent(Minecraft.getMinecraft().thePlayer, (byte) virtualKey, type); //Dispatch to Server
 		}
 		
 		private boolean acceptsInput() {

@@ -32,14 +32,16 @@ import cn.weaponry.api.client.render.RenderInfo.ItemRenderCallback;
 public class RendererWeapon implements IItemRenderer {
 	
 	//TODO: Data heavy, use json to load those data
-	CompTransform 
+	public CompTransform 
 		stdTransform = new CompTransform(), 
 		fpTransform = new CompTransform(), 
 		tpTransform = new CompTransform(), 
 		entityItemTransform = new CompTransform();
 	
-	final PartedModel model;
-	final ResourceLocation texture;
+	public PartedModel model;
+	public ResourceLocation texture;
+	
+	public RendererWeapon() {}
 	
 	public RendererWeapon(PartedModel _model, ResourceLocation _texture) {
 		model = _model;

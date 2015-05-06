@@ -51,9 +51,9 @@ public class EntityBullet extends EntityAdvanced {
 		m3d.normalize();
 		double vel = 3;
 		m3d.applyToEntity(this);
-		motionX = m3d.motionX * vel;
-		motionY = m3d.motionY * vel;
-		motionZ = m3d.motionZ * vel;
+		motionX = m3d.vx * vel;
+		motionY = m3d.vy * vel;
+		motionZ = m3d.vz * vel;
 		
 		
 		this.regEventHandler(new CollideHandler() {

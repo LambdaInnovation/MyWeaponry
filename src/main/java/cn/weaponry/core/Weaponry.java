@@ -12,10 +12,6 @@
  */
 package cn.weaponry.core;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,12 +20,8 @@ import org.apache.logging.log4j.Logger;
 import cn.annoreg.core.RegistrationClass;
 import cn.annoreg.core.RegistrationManager;
 import cn.annoreg.core.RegistrationMod;
-import cn.annoreg.mc.RegItem;
 import cn.annoreg.mc.RegMessageHandler;
 import cn.liutils.core.LIUtils;
-import cn.weaponry.WeaponTest;
-import cn.weaponry.api.client.render.PartedObjModel;
-import cn.weaponry.api.client.render.RendererWeapon;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;

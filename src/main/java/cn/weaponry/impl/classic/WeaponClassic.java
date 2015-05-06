@@ -49,10 +49,16 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  * State diagram is given in state classes' descriptions.
  * 
+ * The ammoTyped field must be initialized before use, or it will crash MC when reloading.
+ * 
  * WARNING: This is a data heavy class. You would probably want to use its json loader to load instances.
  * @author WeAthFolD
  */
 public class WeaponClassic extends WeaponBase {
+	
+	//Weapon basic info
+	public int maxAmmo = 30;
+	public Item ammoType;
 	
 	//Shooting
 	public int shootInterval = 5;
@@ -64,6 +70,8 @@ public class WeaponClassic extends WeaponBase {
 	
 	//Reloading
 	public int reloadTime = 20;
+	//Is the reloading state a 'reload one at a time' reloading style. (Used for stuffs like shotguns)
+	public boolean isBuckReload;
 	public String reloadStartSound;
 	public String reloadEndSound;
 	public String reloadAbortSound;
@@ -80,11 +88,22 @@ public class WeaponClassic extends WeaponBase {
 	//Render data
 	public ScreenUplift screenUplift = new ScreenUplift();
 	
-	public WeaponClassic(Item ammo) {
-		this.ammoStrategy = new ClassicAmmoStrategy(30);
-		this.reloadStrategy = new ClassicReloadStrategy(ammo);	
-		
+	/**
+	 * This ctor is used for item loader. When use this explicitly call finishInit().
+	 */
+	public WeaponClassic() {
 		WpnEventLoader.load(this);
+	}
+	
+	public WeaponClassic(Item ammoType, int maxAmmo) {
+		this.ammoType = ammoType;
+		this.maxAmmo = maxAmmo;
+		finishInit();
+	}
+	
+	public void finishInit() {
+		ammoStrategy = new ClassicAmmoStrategy(maxAmmo);
+		reloadStrategy = new ClassicReloadStrategy(ammoType);
 	}
 	
 	@WeaponCallback
