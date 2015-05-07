@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import cn.weaponry.api.ItemInfo;
+import cn.weaponry.api.action.Action;
 import cn.weaponry.api.client.render.RenderInfo;
 import cn.weaponry.api.ctrl.KeyEventType;
 import cn.weaponry.api.event.WeaponCallback;
@@ -33,6 +34,7 @@ import cn.weaponry.impl.classic.ammo.AmmoStrategy;
 import cn.weaponry.impl.classic.ammo.ClassicAmmoStrategy;
 import cn.weaponry.impl.classic.ammo.ClassicReloadStrategy;
 import cn.weaponry.impl.classic.ammo.ReloadStrategy;
+import cn.weaponry.impl.classic.client.animation.Muzzleflash;
 import cn.weaponry.impl.classic.event.ClassicEvents.CanReload;
 import cn.weaponry.impl.classic.event.ClassicEvents.CanShoot;
 import cn.weaponry.impl.classic.event.ClassicEvents.ReloadEvent;
@@ -40,6 +42,7 @@ import cn.weaponry.impl.classic.event.ClassicEvents.ShootEvent;
 import cn.weaponry.impl.generic.action.ScreenUplift;
 import cn.weaponry.impl.generic.action.SwingSilencer;
 import cn.weaponry.impl.generic.entity.EntityBullet;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -88,11 +91,16 @@ public class WeaponClassic extends WeaponBase {
 	//Render data
 	public ScreenUplift screenUplift = new ScreenUplift();
 	
+	public Muzzleflash animMuzzleflash;
+	
 	/**
 	 * This ctor is used for item loader. When use this explicitly call finishInit().
 	 */
 	public WeaponClassic() {
 		WpnEventLoader.load(this);
+		if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+			animMuzzleflash = new Muzzleflash();
+		}
 	}
 	
 	public WeaponClassic(Item ammoType, int maxAmmo) {
@@ -116,6 +124,22 @@ public class WeaponClassic extends WeaponBase {
 	public void onInfoStart(ItemInfo info) {
 		super.onInfoStart(info);
 		info.addAction(new SwingSilencer());
+		info.addAction(new Action() {
+
+			@Override
+			public void onTick(int tick) {
+				int shootCount = itemInfo.dataTag().getInteger("shootCount");
+				if(shootCount > 0)
+					shootCount--;
+				itemInfo.dataTag().setInteger("shootCount", shootCount);
+			}
+			
+			@Override
+			public String getName() {
+				return "Miscs";
+			}
+			
+		});
 	}
 	
     @SideOnly(Side.CLIENT)
@@ -234,14 +258,20 @@ public class WeaponClassic extends WeaponBase {
 		
 		@Override
 		public void tickState(int tick) {
-			if(tick % shootInterval == 0) {
-				if(!tryShoot()) {
+			int shootCount = getItem().dataTag().getInteger("shootCount");
+			
+			if(tick % shootInterval == 0 && shootCount == 0) {
+				if(tryShoot()) {
+					shootCount = shootInterval;
+				} else {
 					transitState("idle");
 				}
 				if(!isAutomatic) {
 					transitState("idle");
 				}
 			}
+			
+			getItem().dataTag().setInteger("shootCount", shootCount);
 		}
 		
 		private boolean tryShoot() {
@@ -262,6 +292,8 @@ public class WeaponClassic extends WeaponBase {
 						world.spawnEntityInWorld(spawn);
 					}
 				}
+			} else {
+				RenderInfo.get(getItem()).addCallback("Muzzleflash", animMuzzleflash.copy());
 			}
 			
 			return true;

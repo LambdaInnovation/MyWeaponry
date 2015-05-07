@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import cn.liutils.util.RenderUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
-import cn.weaponry.api.client.render.RenderInfo.ItemRenderCallback;
+import cn.weaponry.api.client.render.RenderInfo.Animation;
 
 /**
  * @author WeAthFolD
@@ -64,9 +64,11 @@ public class RendererWeapon implements IItemRenderer {
 	@Override
 	public final void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		if(type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.EQUIPPED) {
 			ItemInfo info = ItemInfoProxy.getInfo(player);
-			RenderInfo ri = (RenderInfo) (info == null ? null : info.getAction("RendererInfo"));
+			RenderInfo ri = (RenderInfo) (info == null ? null : RenderInfo.get(info));
 			if(ri != null) {
 				handleHeldRender(ri, type == ItemRenderType.EQUIPPED_FIRST_PERSON);
 			} else {
@@ -75,18 +77,13 @@ public class RendererWeapon implements IItemRenderer {
 		} else {
 			handleSimpleRender(item);
 		}
+		
 	}
 	
 	private void handleHeldRender(RenderInfo info, boolean firstPerson) {
 		GL11.glPushMatrix();
 		{
 			model.pushTransformState();
-			
-			for(ItemRenderCallback irc : info.getCallbacks()) {
-				irc.onRender(info.itemInfo, model, firstPerson);
-			}
-			RenderUtils.loadTexture(texture);
-			
 			if(firstPerson) {
 				doFirstPersonTansform();
 				fpTransform.doTransform();
@@ -96,6 +93,14 @@ public class RendererWeapon implements IItemRenderer {
 			}
 			stdTransform.doTransform();
 			doFixedTransform();
+			
+			for(Animation irc : info.getCallbacks()) {
+				if(!irc.disposed) {
+					irc.onRender(info.itemInfo, model, firstPerson);
+				}
+			}
+			RenderUtils.loadTexture(texture);
+			
 			model.renderAll();
 			
 			model.popTransformState();

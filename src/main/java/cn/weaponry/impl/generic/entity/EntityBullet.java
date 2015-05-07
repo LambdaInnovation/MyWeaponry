@@ -18,14 +18,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import org.lwjgl.opengl.GL11;
+
 import cn.annoreg.core.RegistrationClass;
 import cn.annoreg.mc.RegEntity;
 import cn.liutils.entityx.EntityAdvanced;
 import cn.liutils.entityx.event.CollideEvent;
 import cn.liutils.entityx.event.CollideEvent.CollideHandler;
 import cn.liutils.entityx.handlers.Rigidbody;
+import cn.liutils.template.client.render.entity.RenderCrossedProjectile;
+import cn.liutils.util.GenericUtils;
 import cn.liutils.util.space.Motion3D;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author WeAthFolD
@@ -33,13 +41,20 @@ import cn.liutils.util.space.Motion3D;
  */
 @RegistrationClass
 @RegEntity
+@RegEntity.HasRender
 public class EntityBullet extends EntityAdvanced {
 	
-	static final double VELOCITY = 40.0;
+	@RegEntity.Render
+	@SideOnly(Side.CLIENT)
+	public static Renderer render;
+	
+	static final double VELOCITY = 80.0;
 	
 	float damage;
 	
 	EntityPlayer spawner;
+	
+	float yaw, pitch;
 
 	public EntityBullet(EntityPlayer player, int scatter, float dmg) {
 		this(player.worldObj);
@@ -49,12 +64,11 @@ public class EntityBullet extends EntityAdvanced {
 		Motion3D m3d = new Motion3D(player, scatter, true);
 		
 		m3d.normalize();
-		double vel = 3;
+		double vel = 5 * GenericUtils.randIntv(0.8, 1.2);
 		m3d.applyToEntity(this);
 		motionX = m3d.vx * vel;
 		motionY = m3d.vy * vel;
 		motionZ = m3d.vz * vel;
-		
 		
 		this.regEventHandler(new CollideHandler() {
 			@Override
@@ -83,11 +97,40 @@ public class EntityBullet extends EntityAdvanced {
 	}
 	
 	@Override
+	public boolean shouldRenderInPass(int pass) {
+		return pass == 1;
+	}
+	
+	@Override
 	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
 		setDead();
 	}
 	
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {}
+	
+	public static class Renderer extends RenderCrossedProjectile {
+
+		public Renderer() {
+			super(1.2, 0.6, new ResourceLocation("weaponry:textures/effects/bullet.png"));
+			this.ignoreLight = true;
+			
+		}
+		
+		@Override
+		public void doRender(Entity entity, double par2, double par4,
+				double par6, float par8, float par9) {
+			EntityBullet bullet = (EntityBullet) entity;
+			
+			
+			super.fpOffsetX = 1;
+			super.fpOffsetZ = 0.8;
+			super.fpOffsetY = -0.25;
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			super.doRender(entity, par2, par4, par6, par8, par9);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+		}
+		
+	}
 
 }

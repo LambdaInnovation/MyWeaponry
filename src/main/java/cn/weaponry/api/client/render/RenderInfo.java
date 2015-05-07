@@ -19,6 +19,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import cn.liutils.util.ReflectUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.action.Action;
 
@@ -28,34 +29,35 @@ import cn.weaponry.api.action.Action;
  */
 public class RenderInfo extends Action {
 	
-	Map<String, ItemRenderCallback> callbacks = new HashMap();
+	Map<String, Animation> callbacks = new HashMap();
 	
-	public void addCallback(String name, ItemRenderCallback cb) {
+	public void addCallback(String name, Animation cb) {
 		if(callbacks.containsKey(name)) {
-			throw new IllegalStateException("Duplicate name " + name);
+			return;
+			//throw new IllegalStateException("Duplicate name " + name);
 		}
 		callbacks.put(name, cb);
 		cb.onStart(itemInfo);
 	}
 	
 	public void removeCallback(String name) {
-		ItemRenderCallback t = callbacks.get(name);
+		Animation t = callbacks.get(name);
 		if(t != null)
 			t.disposed = true;
 	}
 	
 	@Override
 	public void onTick(int tick) {
-		Iterator<ItemRenderCallback> iter = callbacks.values().iterator();
+		Iterator<Animation> iter = callbacks.values().iterator();
 		while(iter.hasNext()) {
-			ItemRenderCallback irc = iter.next();
+			Animation irc = iter.next();
 			if(irc.disposed) {
 				iter.remove();
 			}
 		}
 	}
 	
-	public Collection<ItemRenderCallback> getCallbacks() {
+	public Collection<Animation> getCallbacks() {
 		return callbacks.values();
 	}
 	
@@ -73,7 +75,11 @@ public class RenderInfo extends Action {
 		return "RenderInfo";
 	}
 	
-	public static abstract class ItemRenderCallback {
+	public static RenderInfo get(ItemInfo ii) {
+		return ii.getAction("RenderInfo");
+	}
+	
+	public static abstract class Animation {
 		
 		public boolean disposed = false;
 		
@@ -81,10 +87,10 @@ public class RenderInfo extends Action {
 		
 		long lifeTime = Long.MAX_VALUE;
 		
-		public ItemRenderCallback() {}
+		public Animation() {}
 		
 		//Sets
-		public ItemRenderCallback setLifetime(long time) {
+		public Animation setLifetime(long time) {
 			lifeTime = time;
 			return this;
 		}
@@ -111,6 +117,15 @@ public class RenderInfo extends Action {
 		//Utils
 		public long getDeltaTime() {
 			return Minecraft.getSystemTime() - beginTime;
+		}
+		
+		public <T extends Animation> T copy() {
+			try {
+				return (T) ReflectUtils.copy(this);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
 		
 	}

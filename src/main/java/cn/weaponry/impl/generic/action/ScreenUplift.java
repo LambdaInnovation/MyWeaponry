@@ -32,7 +32,7 @@ public class ScreenUplift extends Action {
 	public double upliftRadius = 4; //Expected uplift radius. For better experience use RangeRandom(rad*0.8, rad*1.2).
 	
 	public double upliftSpeed = 2.5; //Uplift speed, unit: deg/tick
-	public double recoverSpeed = 0.15; //Angle recover speed, unit: deg/tick
+	public double recoverSpeed = 0.9; //Angle recover speed, unit: deg/tick
 	
 	public double degreeFrom = 50, degreeTo = 130; //The allowed "uplift" vector scatter range, in degrees.
 	

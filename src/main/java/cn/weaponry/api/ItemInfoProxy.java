@@ -153,7 +153,6 @@ public class ItemInfoProxy {
 		public void onServerTick(ServerTickEvent event) {
 			if(event.phase == Phase.END)
 				return;
-			
 			for(Object p : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 				EntityPlayer player = (EntityPlayer) p;
 				getProxy().getInfo(player);

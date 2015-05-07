@@ -18,12 +18,12 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.ItemLoadRule;
-import cn.liutils.loading.item.ItemLoader;
 import cn.weaponry.api.client.render.CompTransform;
 import cn.weaponry.api.client.render.PartedObjModel;
 import cn.weaponry.api.client.render.RendererWeapon;
 import cn.weaponry.core.Weaponry;
 import cn.weaponry.impl.classic.WeaponClassic;
+import cn.weaponry.impl.classic.client.animation.Muzzleflash;
 
 /**
  * Provided a chance for subclasses to redirect the searching.
@@ -56,6 +56,10 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		} else {
 			Weaponry.log.error("WeaponClassic Render Rule: Model lookup failed for " + name);
 		}
+		
+		//Set up muzzleflash
+		Muzzleflash mf = item.animMuzzleflash;
+		mf.load(ns);
 	}
 	
 	protected WavefrontObject loadModel() {

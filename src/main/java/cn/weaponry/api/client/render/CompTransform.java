@@ -36,7 +36,7 @@ public class CompTransform {
 	}
 	
 	public void store() {
-		if(stack != null) 
+		if(stack == null) 
 			stack = new CompTransform();
 		stack.transform = VecUtils.copy(transform);
 		stack.pivotPt = VecUtils.copy(pivotPt);
