@@ -293,7 +293,7 @@ public class WeaponClassic extends WeaponBase {
 					}
 				}
 			} else {
-				RenderInfo.get(getItem()).addCallback("Muzzleflash", animMuzzleflash.copy());
+				RenderInfo.get(getItem()).addCallback(animMuzzleflash.copy());
 			}
 			
 			return true;

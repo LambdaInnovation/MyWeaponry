@@ -40,6 +40,19 @@ public class RenderInfo extends Action {
 		cb.onStart(itemInfo);
 	}
 	
+	public void addCallback(Animation cb) {
+		addCallback(nextFreeName(), cb);
+	}
+	
+	private String nextFreeName() {
+		String str = "un";
+		String res = str + 0;
+		for(int i = 1; callbacks.containsKey(res);++i) {
+			res = str + i;
+		}
+		return res;
+	}
+	
 	public void removeCallback(String name) {
 		Animation t = callbacks.get(name);
 		if(t != null)
@@ -85,7 +98,7 @@ public class RenderInfo extends Action {
 		
 		long beginTime;
 		
-		long lifeTime = Long.MAX_VALUE;
+		protected long lifeTime = Long.MAX_VALUE;
 		
 		public Animation() {}
 		

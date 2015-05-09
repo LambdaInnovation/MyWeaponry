@@ -125,7 +125,7 @@ public class EntityBullet extends EntityAdvanced {
 			
 			super.fpOffsetX = 1;
 			super.fpOffsetZ = 0.8;
-			super.fpOffsetY = -0.25;
+			super.fpOffsetY = -0.4;
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			super.doRender(entity, par2, par4, par6, par8, par9);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);

@@ -37,7 +37,7 @@ public class Muzzleflash extends Animation {
 	public ResourceLocation texture;
 	public double x = 0.7, y = 0.3, z = 0;
 	public double size = 0.45;
-	public long time = 200;
+	public long time = 160;
 	
 	static DrawObject drawObject;
 	static Rect rect;
@@ -46,7 +46,7 @@ public class Muzzleflash extends Animation {
 		rect = new Rect();
 		drawObject.addHandler(rect);
 		drawObject.addHandler(DisableLight.instance());
-		drawObject.addHandler(DisableCullFace.instance());
+		//drawObject.addHandler(DisableCullFace.instance());
 	}
 	
 	public Muzzleflash() {
@@ -60,15 +60,15 @@ public class Muzzleflash extends Animation {
 			texture = new ResourceLocation(str);
 		}
 		
-		Double d = ns.getDouble("render", "muzzleflash", "x");
+		Double d = ns.getDouble("render", "muzzleflash", "offset", 0);
 		if(d != null) {
 			x = d;
 		}
-		d = ns.getDouble("render", "muzzleflash", "y");
+		d = ns.getDouble("render", "muzzleflash", "offset", 1);
 		if(d != null) {
 			y = d;
 		}
-		d = ns.getDouble("render", "muzzleflash", "z");
+		d = ns.getDouble("render", "muzzleflash", "offset", 2);
 		if(d != null) {
 			z = d;
 		}
@@ -85,13 +85,23 @@ public class Muzzleflash extends Animation {
 	
 	@Override
 	public void render(ItemInfo info, PartedModel model, boolean firstPerson) {
+		double alpha = 1.0;
+		
+		//Blend in
+		long dt = getDeltaTime();
+		if(dt < 40) {
+			alpha = dt / 40.0;
+		} else if(dt > lifeTime - 40.0) {
+			alpha = (lifeTime - dt) / 40.0;
+		}
+		
 		GL11.glPushMatrix();
 		RenderUtils.loadTexture(texture == null ? MISSING : texture);
 		GL11.glTranslated(x, y, z);
 		
 		rect.setSize(size, size);
 		rect.setCentered();
-		GL11.glColor4d(1, 1, 1, 0.7);
+		GL11.glColor4d(1, 1, 1, alpha * 0.8);
 		drawObject.draw();
 		GL11.glColor4d(1, 1, 1, 1);
 		
@@ -99,9 +109,7 @@ public class Muzzleflash extends Animation {
 	}
 	
 	public <T extends Animation> T copy() {
-		
 		T copy = super.copy();
-		System.out.println(this.texture + " " + ((Muzzleflash)copy).texture);
 		return copy;
 	}
 	

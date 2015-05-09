@@ -55,7 +55,7 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 		for(Field f : ints) {
 			Integer i = ns.getInt("weapon", f.getName());
 			if(i != null) {
-				System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
+				//System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
 				f.set(item, (int)i);
 			}
 		}
@@ -63,7 +63,7 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 		for(Field f : strs) {
 			String s = ns.getString("weapon", f.getName());
 			if(s != null) {
-				System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
+				//System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
 				f.set(item, s);
 			}
 		}
@@ -71,7 +71,7 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 		for(Field f : booleans) {
 			Boolean b = ns.getBoolean("weapon", f.getName());
 			if(b != null) {
-				System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
+				//System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
 				f.set(item, (boolean)b);
 			}
 		}
@@ -80,7 +80,7 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 		for(String prop : ul) {
 			Double d = ns.getDouble("weapon", "uplift", prop);
 			if(d != null) {
-				System.out.println(String.format("[%s]Updated field uplift.%s", prop, name));
+				//System.out.println(String.format("[%s]Updated field uplift.%s", prop, name));
 				ScreenUplift.class.getField(prop).set(item.screenUplift, d);
 			}
 		}

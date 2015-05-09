@@ -58,7 +58,7 @@ public class RendererWeapon implements IItemRenderer {
 	@Override
 	public final boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
 			ItemRendererHelper helper) {
-		return false;
+		return type == ItemRenderType.ENTITY;
 	}
 
 	@Override
@@ -75,15 +75,20 @@ public class RendererWeapon implements IItemRenderer {
 				handleSimpleRender(item);
 			}
 		} else {
-			handleSimpleRender(item);
+			if(type == ItemRenderType.ENTITY) {
+				handleEntityItemRender(item);
+			} else {
+				handleSimpleRender(item);
+			}
 		}
 		
 	}
 	
 	private void handleHeldRender(RenderInfo info, boolean firstPerson) {
 		GL11.glPushMatrix();
+		model.pushTransformState();
 		{
-			model.pushTransformState();
+			
 			if(firstPerson) {
 				doFirstPersonTansform();
 				fpTransform.doTransform();
@@ -94,17 +99,28 @@ public class RendererWeapon implements IItemRenderer {
 			stdTransform.doTransform();
 			doFixedTransform();
 			
-			for(Animation irc : info.getCallbacks()) {
-				if(!irc.disposed) {
-					irc.onRender(info.itemInfo, model, firstPerson);
+			GL11.glMatrixMode(GL11.GL_TEXTURE);
+			GL11.glPushMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glPushMatrix();
+			{
+				for(Animation irc : info.getCallbacks()) {
+					if(!irc.disposed) {
+						irc.onRender(info.itemInfo, model, firstPerson);
+					}
 				}
 			}
+			GL11.glMatrixMode(GL11.GL_TEXTURE);
+			GL11.glPopMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glPopMatrix();
+			
+			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderUtils.loadTexture(texture);
-			
 			model.renderAll();
-			
-			model.popTransformState();
+			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
+		model.popTransformState();
 		GL11.glPopMatrix();
 	}
 	
@@ -113,6 +129,17 @@ public class RendererWeapon implements IItemRenderer {
 		{
 			stdTransform.doTransform();
 			doFixedTransform();
+			RenderUtils.loadTexture(texture);
+			model.renderAll();
+		} 
+		GL11.glPopMatrix();
+	}
+	
+	private void handleEntityItemRender(ItemStack stack) {
+		GL11.glPushMatrix(); 
+		{
+			GL11.glRotated(30, 0, 0, 1);
+			stdTransform.doTransform();
 			RenderUtils.loadTexture(texture);
 			model.renderAll();
 		} 

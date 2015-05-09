@@ -18,6 +18,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.ItemLoadRule;
+import cn.liutils.util.DebugUtils;
 import cn.weaponry.api.client.render.CompTransform;
 import cn.weaponry.api.client.render.PartedObjModel;
 import cn.weaponry.api.client.render.RendererWeapon;
@@ -86,26 +87,30 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		vec = lookVector("render", compName, "rotation");
 		if(vec != null) ct.rotation = vec;
 		
-		Double scale = ns.getDouble("render", "scale");
+		Double scale = ns.getDouble("render", compName, "scale");
 		if(scale != null) ct.scale = scale;
 	}
 	
 	private Vec3 lookVector(String ...base) {
-		Object[] look = new String[base.length + 1];
+		Object[] look = new Object[base.length + 1];
 		System.arraycopy(base, 0, look, 0, base.length);
 		Double x, y, z;
 		
-		look[base.length] = "x";
+		look[base.length] = 0;
 		x = ns.getDouble(look);
 		
-		look[base.length] = "y";
+		look[base.length] = 1;
 		y = ns.getDouble(look);
 		
-		look[base.length] = "z";
+		look[base.length] = 2;
 		z = ns.getDouble(look);
 		
-		if(x != null && y != null && z != null)
+		if(x != null && y != null && z != null) {
+			System.out.println("Located vec " + name + "/" + DebugUtils.formatArray((Object[])base));
 			return Vec3.createVectorHelper(x, y, z);
+		} else {
+			System.out.println("Not locate vec " + name + "/" + DebugUtils.formatArray((Object[])base));
+		}
 		return null;
 	}
 
