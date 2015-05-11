@@ -15,16 +15,17 @@ package cn.weaponry.impl.classic.ammo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cn.liutils.util.GenericUtils;
+import cn.weaponry.impl.classic.WeaponClassic;
 
 /**
  * @author WeAthFolD
  */
 public class ClassicAmmoStrategy implements AmmoStrategy {
 	
-	final int maxAmmo;
+	final WeaponClassic weapon;
 	
-	public ClassicAmmoStrategy(int _maxAmmo) {
-		maxAmmo = _maxAmmo;
+	public ClassicAmmoStrategy(WeaponClassic _weapon) {
+		weapon = _weapon;
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class ClassicAmmoStrategy implements AmmoStrategy {
 	
 	@Override
 	public int getMaxAmmo(ItemStack stack) {
-		return maxAmmo;
+		return weapon.maxAmmo;
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class ClassicAmmoStrategy implements AmmoStrategy {
 
 	@Override
 	public boolean canConsume(EntityPlayer player, ItemStack stack, int amt) {
-		return player.capabilities.isCreativeMode || getAmmo(stack) > amt;
+		return player.capabilities.isCreativeMode || getAmmo(stack) >= amt;
 	}
 
 }

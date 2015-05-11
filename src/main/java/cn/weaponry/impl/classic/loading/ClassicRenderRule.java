@@ -53,6 +53,8 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 			lookComp(render, render.tpTransform, "t_thirdPerson");
 			lookComp(render, render.entityItemTransform, "t_entityItem");
 			
+			item.reloadAnim.load(ns);
+			
 			MinecraftForgeClient.registerItemRenderer(item, render);
 		} else {
 			Weaponry.log.error("WeaponClassic Render Rule: Model lookup failed for " + name);

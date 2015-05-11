@@ -18,6 +18,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -167,6 +168,10 @@ public class ItemInfo {
 	
 	public ItemStack getStack() {
 		return lastStack;
+	}
+	
+	public <T extends Item> T getItemType() {
+		return (T) lastStack.getItem();
 	}
 	
 }

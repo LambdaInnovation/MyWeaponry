@@ -14,15 +14,21 @@ package cn.weaponry.impl.classic;
 
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import org.lwjgl.opengl.GL11;
+
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.action.Action;
+import cn.weaponry.api.client.render.PartedModel;
 import cn.weaponry.api.client.render.RenderInfo;
+import cn.weaponry.api.client.render.RenderInfo.Animation;
 import cn.weaponry.api.ctrl.KeyEventType;
 import cn.weaponry.api.event.WeaponCallback;
 import cn.weaponry.api.event.WpnEventLoader;
@@ -35,10 +41,13 @@ import cn.weaponry.impl.classic.ammo.ClassicAmmoStrategy;
 import cn.weaponry.impl.classic.ammo.ClassicReloadStrategy;
 import cn.weaponry.impl.classic.ammo.ReloadStrategy;
 import cn.weaponry.impl.classic.client.animation.Muzzleflash;
+import cn.weaponry.impl.classic.client.animation.Recoil;
+import cn.weaponry.impl.classic.client.animation.ReloadAnimation;
 import cn.weaponry.impl.classic.event.ClassicEvents.CanReload;
 import cn.weaponry.impl.classic.event.ClassicEvents.CanShoot;
 import cn.weaponry.impl.classic.event.ClassicEvents.ReloadEvent;
 import cn.weaponry.impl.classic.event.ClassicEvents.ShootEvent;
+import cn.weaponry.impl.classic.event.ClassicEvents.StartReloadEvent;
 import cn.weaponry.impl.generic.action.ScreenUplift;
 import cn.weaponry.impl.generic.action.SwingSilencer;
 import cn.weaponry.impl.generic.entity.EntityBullet;
@@ -47,15 +56,21 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * WeaponClassic provides a schema for a Half-Life like or CS-like weapon category. It has 3 fixed states:
- * shooting, reloading, idle, and a optional state: acting.(mouse right action)
- * 
+ * <code>WeaponClassic</code> provides a schema for a Half-Life like or CS-like weapon. <br/>
+ * It has 3 fixed states:<br/>
+ *  * shooting<br/>
+ *  * reloading<br/>
+ *  * idle<br/>
+ * and a optional state: <br/>
+ *  * action.(mouse right click to switch)
+ * <br/><br/>
  * State diagram is given in state classes' descriptions.
- * 
+ * <br/>
  * The ammoTyped field must be initialized before use, or it will crash MC when reloading.
- * 
- * WARNING: This is a data heavy class. You would probably want to use its json loader to load instances.
+ * <br/>
+ * WARNING: This is a data heavy class. You would probably want to use a json loader to load its instances.
  * @author WeAthFolD
+ * @see cn.weaponry.impl.classic.loading
  */
 public class WeaponClassic extends WeaponBase {
 	
@@ -89,35 +104,45 @@ public class WeaponClassic extends WeaponBase {
 	public ReloadStrategy reloadStrategy;
 	
 	//Render data
-	public ScreenUplift screenUplift = new ScreenUplift();
-	
+	public ScreenUplift screenUplift;
 	public Muzzleflash animMuzzleflash;
+	public Animation reloadAnim;
+	public Animation recoilAnim;
 	
 	/**
 	 * This ctor is used for item loader. When use this explicitly call finishInit().
 	 */
 	public WeaponClassic() {
+		ammoStrategy = new ClassicAmmoStrategy(this);
+		reloadStrategy = new ClassicReloadStrategy(this);
+		
 		WpnEventLoader.load(this);
+		
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+			screenUplift = new ScreenUplift();
 			animMuzzleflash = new Muzzleflash();
+			reloadAnim = new ReloadAnimation();
+			recoilAnim = new Recoil();
 		}
 	}
 	
 	public WeaponClassic(Item ammoType, int maxAmmo) {
 		this.ammoType = ammoType;
 		this.maxAmmo = maxAmmo;
-		finishInit();
 	}
 	
-	public void finishInit() {
-		ammoStrategy = new ClassicAmmoStrategy(maxAmmo);
-		reloadStrategy = new ClassicReloadStrategy(ammoType);
-	}
-	
-	@WeaponCallback
+	@WeaponCallback(side = Side.CLIENT)
 	@SideOnly(Side.CLIENT)
 	public void onShoot(ItemInfo item, ShootEvent event) {
 		item.addAction(screenUplift.copy());
+		RenderInfo.get(item).addAnimation(recoilAnim.copy());
+	}
+	
+	@WeaponCallback(side = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
+	public void onReload(ItemInfo item, StartReloadEvent event) {
+		System.out.println("OnReloadStart");
+		RenderInfo.get(item).addAnimation(reloadAnim.copy());
 	}
 	
 	@Override
@@ -164,7 +189,25 @@ public class WeaponClassic extends WeaponBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void initDefaultAnims(RenderInfo render) {
-		//TODO
+		// An idle-swing effect
+		render.addAnimation(new Animation() {
+			@Override
+			public void render(ItemInfo info, PartedModel model, boolean firstPerson) {
+				long time = Minecraft.getSystemTime();
+				double dx = 0.005 * Math.sin(time / 1000.0),
+						dy = 0.01 * Math.sin(time / 700.0),
+						dz = 0.012 * Math.sin(time / 1400.0);
+				//System.out.println("Translate");
+				GL11.glTranslated(dx, dy, dz);
+			}
+			
+			@Override
+			public boolean shouldRenderInPass(int pass) {
+				return pass == 0;
+			}
+		});
+		
+		
 	}
 	
 	/**
@@ -181,7 +224,7 @@ public class WeaponClassic extends WeaponBase {
 		
 		@Override
 		public void onCtrl(int key, KeyEventType type) {
-			if(key == 0 && type == KeyEventType.DOWN) {
+			if(key == 0 && (type == KeyEventType.DOWN || type == KeyEventType.TICK) ) {
 				if(ammoStrategy.canConsume(getPlayer(), getStack(), 1)) {
 					transitState("shoot");
 				} else {
@@ -206,9 +249,9 @@ public class WeaponClassic extends WeaponBase {
 		public void enterState() {
 			WeaponClassic weapon = getWeapon();
 			ReloadStrategy rs = weapon.reloadStrategy;
-			
 			if(post(getItem(), new CanReload())) {
 				if(rs.canReload(getPlayer(), getStack())) {
+					post(getItem(), new StartReloadEvent());
 					SoundUtils.playBothSideSound(getPlayer(), reloadStartSound);
 				} else {
 					SoundUtils.playBothSideSound(getPlayer(), reloadAbortSound);
@@ -293,7 +336,7 @@ public class WeaponClassic extends WeaponBase {
 					}
 				}
 			} else {
-				RenderInfo.get(getItem()).addCallback(animMuzzleflash.copy());
+				RenderInfo.get(getItem()).addAnimation(animMuzzleflash.copy());
 			}
 			
 			return true;

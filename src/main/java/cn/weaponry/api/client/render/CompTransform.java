@@ -38,16 +38,16 @@ public class CompTransform {
 	public void store() {
 		if(stack == null) 
 			stack = new CompTransform();
-		stack.transform = VecUtils.copy(transform);
-		stack.pivotPt = VecUtils.copy(pivotPt);
-		stack.rotation = VecUtils.copy(rotation);
+		VecUtils.copy(transform, stack.transform);
+		VecUtils.copy(pivotPt, stack.pivotPt);
+		VecUtils.copy(rotation, stack.rotation);
 		stack.scale = scale;
 	}
 	
 	public void restore() {
-		transform = VecUtils.copy(stack.transform);
-		pivotPt = VecUtils.copy(stack.pivotPt);
-		rotation = VecUtils.copy(stack.rotation);
+		VecUtils.copy(stack.transform, transform);
+		VecUtils.copy(stack.pivotPt, pivotPt);
+		VecUtils.copy(stack.rotation, rotation);
 		scale = stack.scale;
 	}
 	

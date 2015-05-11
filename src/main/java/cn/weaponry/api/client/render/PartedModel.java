@@ -26,6 +26,7 @@ import cn.weaponry.core.blob.VecUtils;
  */
 public abstract class PartedModel {
 
+	CompTransform transformAll = new CompTransform();
 	Map<String, CompTransform> transformData = new HashMap();
 	
 	public PartedModel(String ...partNames) {
@@ -39,19 +40,31 @@ public abstract class PartedModel {
 	}
 	
 	public void renderAll() {
-		for(String s : transformData.keySet()) {
-			renderPart(s);
-			//System.out.println("render part " + s);
+		renderAll("__niconiconi__");
+	}
+	
+	public void renderAll(String exception) {
+		GL11.glPushMatrix();
+		{
+			transformAll.doTransform();
+			for(String s : transformData.keySet()) {
+				if(!s.equals(exception))
+					renderPart(s);
+				//System.out.println("render part " + s);
+			}
 		}
+		GL11.glPopMatrix();
 	}
 	
 	public void pushTransformState() {
+		transformAll.store();
 		for(CompTransform t : transformData.values()) {
 			t.store();
 		}
 	}
 	
 	public void popTransformState() {
+		transformAll.restore();
 		for(CompTransform t : transformData.values()) {
 			t.restore();
 		}
@@ -75,6 +88,10 @@ public abstract class PartedModel {
 	
 	public CompTransform getTransform(String name) {
 		return transformData.get(name);
+	}
+	
+	public CompTransform getAllTransform() {
+		return transformAll;
 	}
 	
 	protected abstract void renderAtCenter(String name);

@@ -88,7 +88,7 @@ public class Muzzleflash extends Animation {
 		double alpha = 1.0;
 		
 		//Blend in
-		long dt = getDeltaTime();
+		long dt = getTime();
 		if(dt < 40) {
 			alpha = dt / 40.0;
 		} else if(dt > lifeTime - 40.0) {

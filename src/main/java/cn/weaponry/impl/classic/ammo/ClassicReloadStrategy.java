@@ -23,10 +23,10 @@ import cn.weaponry.impl.classic.WeaponClassic;
  */
 public class ClassicReloadStrategy implements ReloadStrategy {
 	
-	final Item ammoType;
+	final WeaponClassic weapon;
 	
-	public ClassicReloadStrategy(Item _ammoType) {
-		ammoType = _ammoType;
+	public ClassicReloadStrategy(WeaponClassic _weapon) {
+		weapon = _weapon;
 	}
 
 	@Override
@@ -38,8 +38,13 @@ public class ClassicReloadStrategy implements ReloadStrategy {
 		}
 		
 		for(ItemStack i : player.inventory.mainInventory) {
-			if(i != null && i.getItem() == ammoType) {
-				return true;
+			if(i != null && i.getItem() == weapon.ammoType) {
+				if(i.isItemStackDamageable()) {
+					if(i.getItemDamage() < i.getMaxDamage())
+						return true;
+				} else {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -51,23 +56,26 @@ public class ClassicReloadStrategy implements ReloadStrategy {
 		AmmoStrategy ammoStrategy = weapon.ammoStrategy;
 		
 		int need = ammoStrategy.getMaxAmmo(stack) - ammoStrategy.getAmmo(stack);
+		int need2 = need;
 		
 		int i = 0;
 		while(need > 0 && i < player.inventory.mainInventory.length) {
 			ItemStack s = player.inventory.mainInventory[i];
-			if(s != null && s.getItem() == ammoType) {
-				if(s.getMaxStackSize() == 1) {
+			if(s != null && s.getItem() == weapon.ammoType) {
+				if(s.isItemStackDamageable()) {
 					int con = Math.min(s.getMaxDamage() - s.getItemDamage(), need);
 					need -= con;
-					s.setItemDamage(s.getItemDamage() - con);
+					s.setItemDamage(s.getItemDamage() + con);
 				} else {
 					int con = Math.min(s.stackSize, need);
 					need -= con;
 					s.stackSize -= con;
 				}
 			}
+			++i;
 		}
 		
+		ammoStrategy.setAmmo(stack, ammoStrategy.getAmmo(stack) + (need2 - need));
 	}
 
 }

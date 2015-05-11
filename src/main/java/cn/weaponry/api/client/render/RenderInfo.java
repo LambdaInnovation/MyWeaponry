@@ -12,16 +12,20 @@
  */
 package cn.weaponry.api.client.render;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+
+import org.apache.commons.lang3.NotImplementedException;
+
+import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.util.ReflectUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.action.Action;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Runtime weapon rendering info. Used to dispatch render events and enables cool stuffs such as muzzle flash + particle effects.
@@ -31,7 +35,7 @@ public class RenderInfo extends Action {
 	
 	Map<String, Animation> callbacks = new HashMap();
 	
-	public void addCallback(String name, Animation cb) {
+	public void addAnimation(String name, Animation cb) {
 		if(callbacks.containsKey(name)) {
 			return;
 			//throw new IllegalStateException("Duplicate name " + name);
@@ -40,8 +44,8 @@ public class RenderInfo extends Action {
 		cb.onStart(itemInfo);
 	}
 	
-	public void addCallback(Animation cb) {
-		addCallback(nextFreeName(), cb);
+	public void addAnimation(Animation cb) {
+		addAnimation(nextFreeName(), cb);
 	}
 	
 	private String nextFreeName() {
@@ -70,8 +74,16 @@ public class RenderInfo extends Action {
 		}
 	}
 	
-	public Collection<Animation> getCallbacks() {
-		return callbacks.values();
+//	public Collection<Animation> getCallbacks() {
+//		return callbacks.values();
+//	}
+	
+	public void renderAll(PartedModel model, boolean firstPerson, int pass) {
+		for(Animation a : callbacks.values()) {
+			if(!a.disposed && a.shouldRenderInPass(pass)) {
+				a.onRender(itemInfo, model, firstPerson);
+			}
+		}
 	}
 	
 	private String nextName() {
@@ -92,6 +104,15 @@ public class RenderInfo extends Action {
 		return ii.getAction("RenderInfo");
 	}
 	
+	/**
+	 * Each animation is simply a callback that is called
+	 * each render tick when rendering weapon. You can either draw stuffs
+	 * or do translation in it.
+	 * When draw stuffs, use pass 1; When translating, use pass 0.
+	 * @author WeAthFolD
+	 *
+	 */
+	@SideOnly(Side.CLIENT)
 	public static abstract class Animation {
 		
 		public boolean disposed = false;
@@ -120,7 +141,7 @@ public class RenderInfo extends Action {
 		}
 		
 		public final void onRender(ItemInfo info, PartedModel model, boolean firstPerson) {
-			if(getDeltaTime() > lifeTime) {
+			if(getTime() > lifeTime) {
 				disposed = true;
 			} else {
 				render(info, model, firstPerson);
@@ -128,8 +149,12 @@ public class RenderInfo extends Action {
 		}
 		
 		//Utils
-		public long getDeltaTime() {
+		public long getTime() {
 			return Minecraft.getSystemTime() - beginTime;
+		}
+		
+		public boolean shouldRenderInPass(int pass) {
+			return pass == 1;
 		}
 		
 		public <T extends Animation> T copy() {
@@ -139,6 +164,10 @@ public class RenderInfo extends Action {
 				e.printStackTrace();
 				return null;
 			}
+		}
+		
+		public void load(ObjectNamespace ns) {
+			throw new NotImplementedException("Can't load this animation");
 		}
 		
 	}

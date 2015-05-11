@@ -97,6 +97,12 @@ public class VecUtils {
 		return Vec3.createVectorHelper(v.xCoord, v.yCoord, v.zCoord);
 	}
 	
+	public static void copy(Vec3 from, Vec3 to) {
+		to.xCoord = from.xCoord;
+		to.yCoord = from.yCoord;
+		to.zCoord = from.zCoord;
+	}
+	
 	public static Vec3 crossProduct(Vec3 a, Vec3 b) {
 		double 
 			x0 = a.xCoord, y0 = a.yCoord, z0 = a.zCoord,

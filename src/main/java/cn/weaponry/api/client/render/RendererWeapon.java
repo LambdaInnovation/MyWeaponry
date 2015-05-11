@@ -99,23 +99,20 @@ public class RendererWeapon implements IItemRenderer {
 			stdTransform.doTransform();
 			doFixedTransform();
 			
+			info.renderAll(model, firstPerson, 0);
+			
 			GL11.glMatrixMode(GL11.GL_TEXTURE);
 			GL11.glPushMatrix();
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPushMatrix();
-			{
-				for(Animation irc : info.getCallbacks()) {
-					if(!irc.disposed) {
-						irc.onRender(info.itemInfo, model, firstPerson);
-					}
-				}
-			}
+			info.renderAll(model, firstPerson, 1);
 			GL11.glMatrixMode(GL11.GL_TEXTURE);
 			GL11.glPopMatrix();
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPopMatrix();
 			
 			GL11.glDisable(GL11.GL_CULL_FACE);
+			
 			RenderUtils.loadTexture(texture);
 			model.renderAll();
 			GL11.glEnable(GL11.GL_CULL_FACE);

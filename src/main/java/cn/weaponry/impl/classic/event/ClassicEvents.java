@@ -27,6 +27,8 @@ public class ClassicEvents {
 	@Cancelable
 	public static class CanShoot extends Event {}
 	
+	public static class StartReloadEvent extends Event {}
+	
 	public static class ReloadEvent extends Event {}
 	
 	public static class ShootEvent extends Event {}

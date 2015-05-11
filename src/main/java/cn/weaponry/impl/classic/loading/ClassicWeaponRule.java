@@ -85,7 +85,6 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 			}
 		}
 		
-		item.finishInit();
 	}
 	
 	@Override

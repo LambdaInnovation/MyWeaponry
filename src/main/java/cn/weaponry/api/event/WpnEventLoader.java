@@ -16,7 +16,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.relauncher.Side;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.item.WeaponBase;
 
@@ -34,7 +36,11 @@ public class WpnEventLoader {
 //		System.out.println("Loading " + eventProvider);
 		for(Method m : eventProvider.getClass().getMethods()) {
 			if(m.isAnnotationPresent(WeaponCallback.class)) {
-				target.regEventHandler(new Callback((Class<? extends Event>) m.getParameterTypes()[1], m, eventProvider));
+				WeaponCallback anno = m.getAnnotation(WeaponCallback.class);
+				Side side = FMLCommonHandler.instance().getSide();
+				if((anno.side() == Side.CLIENT && side == Side.CLIENT) || side == Side.SERVER) {
+					target.regEventHandler(new Callback((Class<? extends Event>) m.getParameterTypes()[1], m, eventProvider, anno.side()));
+				}
 //				System.out.println("Registered " + m.getName() + " as WpnEventHandler");
 			}
 		}
@@ -42,19 +48,22 @@ public class WpnEventLoader {
 	
 	private static class Callback extends WpnEventHandler {
 
+		final boolean side;
 		final Method method;
 		final Object obj;
 		
-		public Callback(Class<? extends Event> klass, Method _m, Object _obj) {
+		public Callback(Class<? extends Event> klass, Method _m, Object _obj, Side _s) {
 			super(klass);
 			method = _m;
 			obj = _obj;
+			side = _s == Side.CLIENT;
 		}
 
 		@Override
 		public void handleEvent(ItemInfo item, Event event) {
 			try {
-				method.invoke(obj, item, event);
+				if(!side || item.player.worldObj.isRemote == side)
+					method.invoke(obj, item, event);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

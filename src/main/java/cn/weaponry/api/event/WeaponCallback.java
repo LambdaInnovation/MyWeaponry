@@ -17,11 +17,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import cpw.mods.fml.relauncher.Side;
+
 /**
  * @author WeAthFolD
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WeaponCallback {
-
+	
+	Side side() default Side.SERVER;
+	
 }
