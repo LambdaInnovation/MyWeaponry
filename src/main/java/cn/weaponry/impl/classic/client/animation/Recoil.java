@@ -15,10 +15,10 @@ package cn.weaponry.impl.classic.client.animation;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.Vec3;
+import cn.liutils.util.VecUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.client.render.PartedModel;
 import cn.weaponry.api.client.render.RenderInfo.Animation;
-import cn.weaponry.core.blob.VecUtils;
 
 /**
  * @author WeAthFolD

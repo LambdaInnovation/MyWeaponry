@@ -19,10 +19,10 @@ import org.lwjgl.opengl.GL11;
 
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.LoaderUtils;
+import cn.liutils.util.VecUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.client.render.PartedModel;
 import cn.weaponry.api.client.render.RenderInfo.Animation;
-import cn.weaponry.core.blob.VecUtils;
 import cn.weaponry.impl.classic.WeaponClassic;
 
 /**

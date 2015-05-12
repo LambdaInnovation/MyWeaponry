@@ -2,7 +2,7 @@ package cn.weaponry.api.client.render;
 
 import org.lwjgl.opengl.GL11;
 
-import cn.weaponry.core.blob.VecUtils;
+import cn.liutils.util.VecUtils;
 import net.minecraft.util.Vec3;
 
 public class CompTransform {
