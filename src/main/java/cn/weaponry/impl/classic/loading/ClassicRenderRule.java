@@ -25,6 +25,8 @@ import cn.weaponry.api.client.render.RendererWeapon;
 import cn.weaponry.core.Weaponry;
 import cn.weaponry.impl.classic.WeaponClassic;
 import cn.weaponry.impl.classic.client.animation.Muzzleflash;
+import cn.weaponry.impl.classic.client.animation.Recoil;
+import cn.weaponry.impl.classic.client.animation.ReloadAnimation;
 
 /**
  * Provided a chance for subclasses to redirect the searching.
@@ -63,6 +65,12 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		//Set up muzzleflash
 		Muzzleflash mf = item.animMuzzleflash;
 		mf.load(ns);
+		
+		ReloadAnimation ra = item.reloadAnim;
+		ra.load(ns);
+		
+		Recoil r = item.recoilAnim;
+		r.load(ns);
 	}
 	
 	protected WavefrontObject loadModel() {

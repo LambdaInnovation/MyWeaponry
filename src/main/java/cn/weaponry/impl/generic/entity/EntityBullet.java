@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-import cn.annoreg.core.RegistrationClass;
+import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEntity;
 import cn.liutils.entityx.EntityAdvanced;
 import cn.liutils.entityx.event.CollideEvent;
@@ -39,7 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author WeAthFolD
  *
  */
-@RegistrationClass
+@Registrant
 @RegEntity
 @RegEntity.HasRender
 public class EntityBullet extends EntityAdvanced {
@@ -74,7 +74,9 @@ public class EntityBullet extends EntityAdvanced {
 			@Override
 			public void onEvent(CollideEvent event) {
 				if(event.result.typeOfHit == MovingObjectType.ENTITY) {
-					event.result.entityHit.attackEntityFrom(DamageSource.causePlayerDamage(spawner), damage);
+					Entity e = event.result.entityHit;
+					e.hurtResistantTime = -1;
+					e.attackEntityFrom(DamageSource.causePlayerDamage(spawner), damage);
 				}
 				EntityBullet.this.setDead();
 			}
@@ -114,18 +116,15 @@ public class EntityBullet extends EntityAdvanced {
 		public Renderer() {
 			super(1.2, 0.6, new ResourceLocation("weaponry:textures/effects/bullet.png"));
 			this.ignoreLight = true;
-			
+			super.fpOffsetX = 1;
+			super.fpOffsetZ = 0.8;
+			super.fpOffsetY = -0.4;
 		}
 		
 		@Override
 		public void doRender(Entity entity, double par2, double par4,
 				double par6, float par8, float par9) {
 			EntityBullet bullet = (EntityBullet) entity;
-			
-			
-			super.fpOffsetX = 1;
-			super.fpOffsetZ = 0.8;
-			super.fpOffsetY = -0.4;
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			super.doRender(entity, par2, par4, par6, par8, par9);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);

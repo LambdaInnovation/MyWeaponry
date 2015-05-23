@@ -106,8 +106,8 @@ public class WeaponClassic extends WeaponBase {
 	//Render data
 	public ScreenUplift screenUplift;
 	public Muzzleflash animMuzzleflash;
-	public Animation reloadAnim;
-	public Animation recoilAnim;
+	public ReloadAnimation reloadAnim;
+	public Recoil recoilAnim;
 	
 	/**
 	 * This ctor is used for item loader. When use this explicitly call finishInit().
@@ -141,7 +141,6 @@ public class WeaponClassic extends WeaponBase {
 	@WeaponCallback(side = Side.CLIENT)
 	@SideOnly(Side.CLIENT)
 	public void onReload(ItemInfo item, StartReloadEvent event) {
-		System.out.println("OnReloadStart");
 		RenderInfo.get(item).addAnimation(reloadAnim.copy());
 	}
 	

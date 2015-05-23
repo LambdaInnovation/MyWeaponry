@@ -18,7 +18,7 @@ import java.util.WeakHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import cn.annoreg.core.RegistrationClass;
+import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEventHandler;
 import cn.annoreg.mc.RegEventHandler.Bus;
 import cn.weaponry.api.ctrl.IItemCtrlListener;
@@ -30,7 +30,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 /**
  * @author WeAthFolD
  */
-@RegistrationClass
+@Registrant
 @RegEventHandler(Bus.FML)
 public class WeaponControllerServer {
 	

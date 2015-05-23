@@ -17,7 +17,7 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cn.annoreg.core.RegistrationClass;
+import cn.annoreg.core.Registrant;
 import cn.annoreg.core.RegistrationManager;
 import cn.annoreg.core.RegistrationMod;
 import cn.annoreg.mc.RegMessageHandler;
@@ -36,7 +36,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
  */
 @Mod(modid = "weaponry", name = "MyWeaponry")
 @RegistrationMod(pkg = "cn.weaponry.", res = "weaponry", prefix = "mw_")
-@RegistrationClass
+@Registrant
 public class Weaponry {
 	
 	private static final String NET_CHANNEL = "weaponry";

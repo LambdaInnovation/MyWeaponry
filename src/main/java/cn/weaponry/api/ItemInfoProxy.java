@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import cn.annoreg.core.RegistrationClass;
+import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEventHandler;
 import cn.annoreg.mc.RegEventHandler.Bus;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -35,7 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * The class handling ItemInfo loading.
  * @author WeAthFolD
  */
-@RegistrationClass
+@Registrant
 public class ItemInfoProxy {
 	
 	private static Proxy proxy;

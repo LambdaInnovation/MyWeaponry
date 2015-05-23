@@ -12,9 +12,12 @@
  */
 package cn.weaponry.impl.classic.client.animation;
 
+import net.minecraft.util.Vec3;
+
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.util.Vec3;
+import cn.liutils.loading.Loader.ObjectNamespace;
+import cn.liutils.loading.item.LoaderUtils;
 import cn.liutils.util.VecUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.client.render.PartedModel;
@@ -40,9 +43,28 @@ public class Recoil extends Animation {
 	public void render(ItemInfo info, PartedModel model, boolean firstPerson) {
 		long time = getTime();
 		double phase = time * 2 * Math.PI / recoilTime;
-		double offset = Math.sin(phase) * wiggleRadius * (0.2 + 0.8 * (recoilTime - time) / recoilTime);
+		double progress = (double)time / recoilTime;
+		double offset = Math.sin(phase) * wiggleRadius * 1 / (1 + 8 * progress * progress * progress);
 		
 		GL11.glTranslated(recoilVec.xCoord * offset, recoilVec.yCoord * offset, 0);
+	}
+	
+	@Override
+	public void load(ObjectNamespace ns) {
+		Vec3 v = LoaderUtils.loadVec3(ns, "render", "recoil", "direction");
+		if(v != null) {
+			recoilVec = v.normalize();
+		}
+		
+		Integer time = ns.getInt("render", "recoil", "time");
+		if(time != null) {
+			recoilTime = time;
+		}
+		
+		Double radius = ns.getDouble("render", "recoil", "radius");
+		if(radius != null) {
+			wiggleRadius = radius;
+		}
 	}
 	
 	@Override
