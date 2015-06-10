@@ -35,7 +35,7 @@ import cn.weaponry.api.action.Action;
  */
 public class ItemInfo {
 	
-	public final EntityPlayer player;
+	public EntityPlayer player;
 	private final int slot;
 	
 	private ItemStack lastStack;

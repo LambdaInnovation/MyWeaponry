@@ -24,9 +24,8 @@ import cn.annoreg.mc.RegEventHandler.Bus;
 import cn.annoreg.mc.RegSubmoduleInit;
 import cn.annoreg.mc.network.RegNetworkCall;
 import cn.annoreg.mc.s11n.StorageOption;
-import cn.liutils.api.key.IKeyHandler;
-import cn.liutils.api.key.LIKeyProcess;
-import cn.liutils.core.LIUtils;
+import cn.liutils.util.helper.KeyHandler;
+import cn.liutils.util.helper.KeyManager;
 import cn.weaponry.api.ctrl.IItemCtrlListener;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -38,25 +37,28 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author WeAthFolD
  */
 @Registrant
-@RegSubmoduleInit
-@SideOnly(Side.CLIENT)
+@RegSubmoduleInit(side = RegSubmoduleInit.Side.CLIENT_ONLY)
 @RegEventHandler(Bus.FML)
 public class WeaponControllerClient {
 	
-	public static int KEYS[] = { LIKeyProcess.MOUSE_LEFT, LIKeyProcess.MOUSE_RIGHT, Keyboard.KEY_R };
+	public static int KEYS[] = { KeyManager.MOUSE_LEFT, KeyManager.MOUSE_RIGHT, Keyboard.KEY_R };
 	
-	private static KeyHandler handlers[] = new KeyHandler[KEYS.length];
+	@SideOnly(Side.CLIENT)
+	private static KH handlers[];
 	
+	@SideOnly(Side.CLIENT)
 	public static void init() {
+		handlers = new KH[3];
+		
 		for(int i = 0; i < 3; ++i) {
-			LIKeyProcess.instance.addKey("weaponry_" + i, KEYS[i], false, handlers[i] = new KeyHandler(i));
+			KeyManager.dynamic.addKeyHandler("weaponry_" + i, KEYS[i], handlers[i] = new KH(i));
 		}
 	}
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		if(event.phase == Phase.END) return;
-		for(KeyHandler kh : handlers) {
+		for(KH kh : handlers) {
 			kh.tick();
 		}
 	}
@@ -76,7 +78,8 @@ public class WeaponControllerClient {
 		}
 	}
 	
-	private static class KeyHandler implements IKeyHandler {
+	@SideOnly(Side.CLIENT)
+	private static class KH extends KeyHandler {
 		
 		final int virtualKey;
 		
@@ -86,37 +89,35 @@ public class WeaponControllerClient {
 		
 		int tickSendCounter = 0;
 		
-		public KeyHandler(int i) {
+		public KH(int i) {
 			virtualKey = i;
 		}
 		
 		@Override
-		public void onKeyDown(int keyCode, boolean tickEnd) {
-			if(tickEnd || !acceptsInput()) return;
+		public void onKeyDown() {
 			doKeyDown();
 		}
 
 		@Override
-		public void onKeyUp(int keyCode, boolean tickEnd) {
-			if(tickEnd || !acceptsInput()) return;
+		public void onKeyUp() {
 			doKeyUp();
 		}
 
 		@Override
-		public void onKeyTick(int keyCode, boolean tickEnd) {
-			if(tickEnd || !acceptsInput()) return;
+		public void onKeyTick() {
 			doKeyTick();
+		}
+		
+		@Override
+		public void onKeyAbort() {
+			doKeyAbort();
 		}
 		
 		public void tick() {
 			if(keyDown) {
-				if(!acceptsInput()) {
-					sendEvent(SyncEventType.ABORT);
-				} else {
-					if(++ticker > 5) {
-						ticker = 0;
-						doKeyAbort();
-					}
+				if(++ticker > 5) {
+					ticker = 0;
+					doKeyAbort();
 				}
 			}
 		}
@@ -152,6 +153,7 @@ public class WeaponControllerClient {
 			}
 		}
 		
+		@SideOnly(Side.CLIENT)
 		private void sendEvent(SyncEventType type) {
 			//Check player
 			if(Minecraft.getMinecraft().thePlayer == null)
@@ -160,11 +162,6 @@ public class WeaponControllerClient {
 			localSendEvent(Minecraft.getMinecraft().thePlayer, virtualKey, type); //Dispatch to Client
 			
 			serverSendEvent(Minecraft.getMinecraft().thePlayer, (byte) virtualKey, type); //Dispatch to Server
-		}
-		
-		private boolean acceptsInput() {
-			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-			return player != null && Minecraft.getMinecraft().currentScreen == null;
 		}
 		
 	}

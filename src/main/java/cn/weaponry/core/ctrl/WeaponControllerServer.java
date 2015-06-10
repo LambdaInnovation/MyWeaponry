@@ -21,6 +21,7 @@ import net.minecraft.server.MinecraftServer;
 import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEventHandler;
 import cn.annoreg.mc.RegEventHandler.Bus;
+import cn.liutils.registry.KeyHandlerRegistration.RegKeyHandler;
 import cn.weaponry.api.ctrl.IItemCtrlListener;
 import cn.weaponry.api.ctrl.KeyEventType;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

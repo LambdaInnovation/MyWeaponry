@@ -104,9 +104,13 @@ public class WeaponClassic extends WeaponBase {
 	public ReloadStrategy reloadStrategy;
 	
 	//Render data
+	@SideOnly(Side.CLIENT)
 	public ScreenUplift screenUplift;
+	@SideOnly(Side.CLIENT)
 	public Muzzleflash animMuzzleflash;
+	@SideOnly(Side.CLIENT)
 	public ReloadAnimation reloadAnim;
+	@SideOnly(Side.CLIENT)
 	public Recoil recoilAnim;
 	
 	/**
@@ -300,11 +304,12 @@ public class WeaponClassic extends WeaponBase {
 		
 		@Override
 		public void tickState(int tick) {
-			int shootCount = getItem().dataTag().getInteger("shootCount");
+			int shootTick = getItem().dataTag().getInteger("shootTick");
+			int time = machine.getTick();
 			
-			if(tick % shootInterval == 0 && shootCount == 0) {
+			if(time - shootTick >= shootInterval) {
 				if(tryShoot()) {
-					shootCount = shootInterval;
+					getItem().dataTag().setInteger("shootTick", time);
 				} else {
 					transitState("idle");
 				}
@@ -312,8 +317,6 @@ public class WeaponClassic extends WeaponBase {
 					transitState("idle");
 				}
 			}
-			
-			getItem().dataTag().setInteger("shootCount", shootCount);
 		}
 		
 		private boolean tryShoot() {

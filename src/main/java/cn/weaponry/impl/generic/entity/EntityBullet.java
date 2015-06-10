@@ -14,11 +14,14 @@ package cn.weaponry.impl.generic.entity;
 
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -30,8 +33,9 @@ import cn.liutils.entityx.event.CollideEvent;
 import cn.liutils.entityx.event.CollideEvent.CollideHandler;
 import cn.liutils.entityx.handlers.Rigidbody;
 import cn.liutils.template.client.render.entity.RenderCrossedProjectile;
-import cn.liutils.util.GenericUtils;
-import cn.liutils.util.space.Motion3D;
+import cn.liutils.util.generic.RandUtils;
+import cn.liutils.util.helper.Motion3D;
+import cn.liutils.util.mc.WorldUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -50,35 +54,50 @@ public class EntityBullet extends EntityAdvanced {
 	
 	static final double VELOCITY = 80.0;
 	
+	double scatter;
+	
 	float damage;
 	
-	EntityPlayer spawner;
+	EntityLivingBase spawner;
 	
 	float yaw, pitch;
+	
+	Motion3D m3d;
+	
+	public EntityBullet(EntityPlayer player, double scatter, float dmg) {
+		this(player, new Motion3D(player, true), scatter, dmg);
+	}
 
-	public EntityBullet(EntityPlayer player, int scatter, float dmg) {
-		this(player.worldObj);
+	public EntityBullet(EntityLivingBase _spawner, Motion3D m3d, double scatter, float dmg) {
+		this(_spawner.worldObj);
 		
-		spawner = player;
+		spawner = _spawner;
 		damage = dmg;
-		Motion3D m3d = new Motion3D(player, scatter, true);
+		this.scatter = scatter;
 		
 		m3d.normalize();
-		double vel = 5 * GenericUtils.randIntv(0.8, 1.2);
+		double vel = 6 * RandUtils.ranged(1, 1.2);
+		
+		m3d.setMotionOffset(scatter);
 		m3d.applyToEntity(this);
 		motionX = m3d.vx * vel;
 		motionY = m3d.vy * vel;
 		motionZ = m3d.vz * vel;
 		
+		this.m3d = m3d;
+		
 		this.regEventHandler(new CollideHandler() {
 			@Override
 			public void onEvent(CollideEvent event) {
-				if(event.result.typeOfHit == MovingObjectType.ENTITY) {
-					Entity e = event.result.entityHit;
-					e.hurtResistantTime = -1;
-					e.attackEntityFrom(DamageSource.causePlayerDamage(spawner), damage);
-				}
 				EntityBullet.this.setDead();
+				
+				if(!worldObj.isRemote) {
+					MovingObjectPosition result = event.result;
+					if(result != null && result.entityHit != null) {
+						result.entityHit.hurtResistantTime = -1;
+						result.entityHit.attackEntityFrom(DamageSource.causeMobDamage(spawner), damage);
+					}
+				}
 			}
 		});
 	}
@@ -116,9 +135,9 @@ public class EntityBullet extends EntityAdvanced {
 		public Renderer() {
 			super(1.2, 0.6, new ResourceLocation("weaponry:textures/effects/bullet.png"));
 			this.ignoreLight = true;
-			super.fpOffsetX = 1;
-			super.fpOffsetZ = 0.8;
-			super.fpOffsetY = -0.4;
+			super.fpOffsetX = 0.8;
+			super.fpOffsetZ = 0.6;
+			super.fpOffsetY = -0.3;
 		}
 		
 		@Override

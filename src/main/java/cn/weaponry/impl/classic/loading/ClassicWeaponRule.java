@@ -76,15 +76,6 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 			}
 		}
 		
-		String[] ul = { "upliftRadius", "upliftSpeed", "recoverSpeed", "degreeFrom", "degreeTo" };
-		for(String prop : ul) {
-			Double d = ns.getDouble("weapon", "uplift", prop);
-			if(d != null) {
-				//System.out.println(String.format("[%s]Updated field uplift.%s", prop, name));
-				ScreenUplift.class.getField(prop).set(item.screenUplift, d);
-			}
-		}
-		
 	}
 	
 	@Override

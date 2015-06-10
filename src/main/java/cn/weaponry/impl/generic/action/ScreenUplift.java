@@ -14,9 +14,8 @@ package cn.weaponry.impl.generic.action;
 
 import javax.vecmath.Vector2d;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import cn.liutils.util.GenericUtils;
+import cn.liutils.util.generic.RandUtils;
 import cn.weaponry.api.action.Action;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -50,10 +49,10 @@ public class ScreenUplift extends Action {
 	
 	@Override
 	public void onStart() {
-		double rad = GenericUtils.randIntv(degreeFrom, degreeTo) * Math.PI / 180;
+		double rad = RandUtils.ranged(degreeFrom, degreeTo) * Math.PI / 180;
 		dir = new Vector2d(Math.sin(rad), Math.cos(rad));
 		
-		uplift = GenericUtils.randIntv(0.8, 1.2) * upliftRadius;
+		uplift = RandUtils.ranged(0.8, 1.2) * upliftRadius;
 		
 		EntityPlayer player = getPlayer();
 		

@@ -13,6 +13,7 @@
 package cn.weaponry.api.client.render;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -20,10 +21,9 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
-import cn.liutils.util.RenderUtils;
+import cn.liutils.util.client.RenderUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
-import cn.weaponry.api.client.render.RenderInfo.Animation;
 
 /**
  * @author WeAthFolD
@@ -66,10 +66,12 @@ public class RendererWeapon implements IItemRenderer {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
 		if(type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.EQUIPPED) {
 			ItemInfo info = ItemInfoProxy.getInfo(player);
 			RenderInfo ri = (RenderInfo) (info == null ? null : RenderInfo.get(info));
-			if(ri != null) {
+			EntityLivingBase holder = (EntityLivingBase) data[1];
+			if(ri != null && holder == player) {
 				handleHeldRender(ri, type == ItemRenderType.EQUIPPED_FIRST_PERSON);
 			} else {
 				handleSimpleRender(item);

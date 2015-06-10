@@ -34,12 +34,14 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
  * Main class of MyWeaponry.
  * @author WeathFolD
  */
-@Mod(modid = "weaponry", name = "MyWeaponry")
+@Mod(modid = "weaponry", name = "MyWeaponry", version = Weaponry.VERSION)
 @RegistrationMod(pkg = "cn.weaponry.", res = "weaponry", prefix = "mw_")
 @Registrant
 public class Weaponry {
 	
 	private static final String NET_CHANNEL = "weaponry";
+	
+	public static final String VERSION = "1.0a2";
 	
 	@Instance("weaponry")
 	public static Weaponry instance;

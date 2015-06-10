@@ -16,12 +16,11 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import cn.liutils.api.draw.DrawObject;
-import cn.liutils.api.draw.prop.DisableCullFace;
-import cn.liutils.api.draw.prop.DisableLight;
-import cn.liutils.api.draw.tess.Rect;
 import cn.liutils.loading.Loader.ObjectNamespace;
-import cn.liutils.util.RenderUtils;
+import cn.liutils.render.material.SimpleMaterial;
+import cn.liutils.render.mesh.Mesh;
+import cn.liutils.render.mesh.MeshUtils;
+import cn.liutils.util.client.RenderUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.client.render.PartedModel;
 import cn.weaponry.api.client.render.RenderInfo.Animation;
@@ -39,14 +38,12 @@ public class Muzzleflash extends Animation {
 	public double size = 0.45;
 	public long time = 160;
 	
-	static DrawObject drawObject;
-	static Rect rect;
+	static Mesh mesh;
+	static SimpleMaterial material;
 	static {
-		drawObject = new DrawObject();
-		rect = new Rect();
-		drawObject.addHandler(rect);
-		drawObject.addHandler(DisableLight.instance());
 		//drawObject.addHandler(DisableCullFace.instance());
+		mesh = MeshUtils.createBillboard(null, -.5, -.5, .5, .5);
+		material = new SimpleMaterial(null).setIgnoreLight();
 	}
 	
 	public Muzzleflash() {
@@ -95,17 +92,20 @@ public class Muzzleflash extends Animation {
 			alpha = (lifeTime - dt) / 40.0;
 		}
 		
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glPushMatrix();
 		RenderUtils.loadTexture(texture == null ? MISSING : texture);
 		GL11.glTranslated(x, y, z);
 		
-		rect.setSize(size, size);
-		rect.setCentered();
-		GL11.glColor4d(1, 1, 1, alpha * 0.8);
-		drawObject.draw();
+		material.texture = texture;
+		GL11.glScaled(size, size, size);
+		material.color.a = alpha * 0.8;
+		GL11.glRotatef(90, 0, 1, 0);
+		mesh.draw(material);
 		GL11.glColor4d(1, 1, 1, 1);
 		
 		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_CULL_FACE);
 	}
 	
 	public <T extends Animation> T copy() {

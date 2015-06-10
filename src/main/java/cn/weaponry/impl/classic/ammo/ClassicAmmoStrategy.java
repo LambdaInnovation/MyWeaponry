@@ -14,7 +14,7 @@ package cn.weaponry.impl.classic.ammo;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cn.liutils.util.GenericUtils;
+import cn.liutils.util.mc.StackUtils;
 import cn.weaponry.impl.classic.WeaponClassic;
 
 /**
@@ -30,12 +30,12 @@ public class ClassicAmmoStrategy implements AmmoStrategy {
 
 	@Override
 	public int getAmmo(ItemStack stack) {
-		return GenericUtils.loadCompound(stack).getInteger("ammo");
+		return StackUtils.loadTag(stack).getInteger("ammo");
 	}
 
 	@Override
 	public void setAmmo(ItemStack stack, int n) {
-		GenericUtils.loadCompound(stack).setInteger("ammo", n);
+		StackUtils.loadTag(stack).setInteger("ammo", n);
 	}
 	
 	@Override

@@ -18,7 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import cn.liutils.cgui.utils.TypeHelper;
+import cn.liutils.util.helper.TypeHelper;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.core.Weaponry;
 

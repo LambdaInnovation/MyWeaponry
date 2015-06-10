@@ -18,7 +18,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.ItemLoadRule;
-import cn.liutils.util.DebugUtils;
+import cn.liutils.util.generic.DebugUtils;
 import cn.weaponry.api.client.render.CompTransform;
 import cn.weaponry.api.client.render.PartedObjModel;
 import cn.weaponry.api.client.render.RendererWeapon;
@@ -27,6 +27,7 @@ import cn.weaponry.impl.classic.WeaponClassic;
 import cn.weaponry.impl.classic.client.animation.Muzzleflash;
 import cn.weaponry.impl.classic.client.animation.Recoil;
 import cn.weaponry.impl.classic.client.animation.ReloadAnimation;
+import cn.weaponry.impl.generic.action.ScreenUplift;
 
 /**
  * Provided a chance for subclasses to redirect the searching.
@@ -71,6 +72,15 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		
 		Recoil r = item.recoilAnim;
 		r.load(ns);
+		
+		String[] ul = { "upliftRadius", "upliftSpeed", "recoverSpeed", "degreeFrom", "degreeTo" };
+		for(String prop : ul) {
+			Double d = ns.getDouble("weapon", "uplift", prop);
+			if(d != null) {
+				//System.out.println(String.format("[%s]Updated field uplift.%s", prop, name));
+				ScreenUplift.class.getField(prop).set(item.screenUplift, d);
+			}
+		}
 	}
 	
 	protected WavefrontObject loadModel() {
@@ -116,10 +126,10 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		z = ns.getDouble(look);
 		
 		if(x != null && y != null && z != null) {
-			System.out.println("Located vec " + name + "/" + DebugUtils.formatArray((Object[])base));
+			//System.out.println("Located vec " + name + "/" + DebugUtils.formatArray((Object[])base));
 			return Vec3.createVectorHelper(x, y, z);
 		} else {
-			System.out.println("Not locate vec " + name + "/" + DebugUtils.formatArray((Object[])base));
+			//System.out.println("Not locate vec " + name + "/" + DebugUtils.formatArray((Object[])base));
 		}
 		return null;
 	}

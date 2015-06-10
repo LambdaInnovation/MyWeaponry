@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.NotImplementedException;
 
 import cn.liutils.loading.Loader.ObjectNamespace;
-import cn.liutils.util.ReflectUtils;
+import cn.liutils.util.generic.RegistryUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.action.Action;
 import cpw.mods.fml.relauncher.Side;
@@ -159,7 +159,7 @@ public class RenderInfo extends Action {
 		
 		public <T extends Animation> T copy() {
 			try {
-				return (T) ReflectUtils.copy(this);
+				return (T) RegistryUtils.copy(this);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;

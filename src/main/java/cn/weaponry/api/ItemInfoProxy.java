@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.world.WorldEvent;
 import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEventHandler;
 import cn.annoreg.mc.RegEventHandler.Bus;
@@ -44,6 +45,8 @@ public class ItemInfoProxy {
 		ItemInfo getInfo(EntityPlayer player);
 		
 		void tick(boolean isRemote);
+		
+		void clear();
 	}
 	
 	private static class SimpleProxy implements Proxy {
@@ -57,7 +60,7 @@ public class ItemInfoProxy {
 			if(playerInfo != null) {
 				playerInfo.checkStack();
 				
-				if(playerInfo.disposed) {
+				if(playerInfo.disposed || playerInfo.player != player) {
 					playerInfo.onDisposed();
 					playerInfo = null;
 				}
@@ -78,6 +81,9 @@ public class ItemInfoProxy {
 			} else {
 				server = playerInfo;
 			}
+			
+//			if(playerInfo != null)
+//				playerInfo.player = player;
 			return playerInfo;
 		}
 
@@ -86,6 +92,11 @@ public class ItemInfoProxy {
 			ItemInfo targ = isRemote ? client : server;
 			if(targ != null)
 				targ.tick();
+		}
+
+		@Override
+		public void clear() {
+			client = server = null;
 		}
 		
 	}
@@ -109,6 +120,11 @@ public class ItemInfoProxy {
 			for(SimpleProxy sp : proxies.values()) {
 				sp.tick(isRemote);
 			}
+		}
+
+		@Override
+		public void clear() {
+			proxies.clear();
 		}
 		
 	}
@@ -170,6 +186,12 @@ public class ItemInfoProxy {
 			if(info != null) {
 				info.renderTick();
 			}
+		}
+		
+		// Clear all the previously exist info instances to prevent collision
+		@SubscribeEvent
+		public void onWorldLoad(WorldEvent.Load event) {
+			getProxy().clear();
 		}
 		
 	}

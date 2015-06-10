@@ -19,7 +19,8 @@ import org.lwjgl.opengl.GL11;
 
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.LoaderUtils;
-import cn.liutils.util.VecUtils;
+import cn.liutils.util.client.RenderUtils;
+import cn.liutils.util.generic.VecUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.client.render.PartedModel;
 import cn.weaponry.api.client.render.RenderInfo.Animation;
@@ -63,9 +64,9 @@ public class ReloadAnimation extends Animation {
 		
 		GL11.glTranslated(0, -progress / maxAngle * 0.15, progress / maxAngle * 0.1);
 		
-		VecUtils.glTranslate(pivotPt);
-		VecUtils.glRotate(progress, rotationAxis);
-		VecUtils.glTranslate(VecUtils.neg(pivotPt));
+		RenderUtils.glTranslate(pivotPt);
+		RenderUtils.glRotate(progress, rotationAxis);
+		RenderUtils.glTranslate(VecUtils.neg(pivotPt));
 	}
 	
 	@Override

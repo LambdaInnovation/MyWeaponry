@@ -1,9 +1,11 @@
 package cn.weaponry.api.client.render;
 
+import net.minecraft.util.Vec3;
+
 import org.lwjgl.opengl.GL11;
 
-import cn.liutils.util.VecUtils;
-import net.minecraft.util.Vec3;
+import cn.liutils.util.client.RenderUtils;
+import cn.liutils.util.generic.VecUtils;
 
 public class CompTransform {
 	
@@ -24,7 +26,7 @@ public class CompTransform {
 	}
 	
 	public void doTransform() {
-		VecUtils.glTranslate(VecUtils.add(transform, pivotPt));
+		RenderUtils.glTranslate(VecUtils.add(transform, pivotPt));
 		
 		GL11.glRotated(rotation.zCoord, 0, 0, 1);
 		GL11.glRotated(rotation.yCoord, 0, 1, 0);
@@ -32,7 +34,7 @@ public class CompTransform {
 		
 		GL11.glScaled(scale, scale, scale);
 		
-		VecUtils.glTranslate(VecUtils.neg(pivotPt));
+		RenderUtils.glTranslate(VecUtils.neg(pivotPt));
 	}
 	
 	public void store() {

@@ -15,11 +15,7 @@ package cn.weaponry.api.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.util.Vec3;
-
 import org.lwjgl.opengl.GL11;
-
-import cn.liutils.util.VecUtils;
 
 /**
  * @author WeAthFolD

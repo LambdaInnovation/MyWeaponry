@@ -70,6 +70,8 @@ public class ClassicReloadStrategy implements ReloadStrategy {
 					int con = Math.min(s.stackSize, need);
 					need -= con;
 					s.stackSize -= con;
+					if(s.stackSize == 0)
+						player.inventory.mainInventory[i] = null;
 				}
 			}
 			++i;
