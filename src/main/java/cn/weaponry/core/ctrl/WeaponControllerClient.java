@@ -21,7 +21,7 @@ import org.lwjgl.input.Keyboard;
 import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEventHandler;
 import cn.annoreg.mc.RegEventHandler.Bus;
-import cn.annoreg.mc.RegSubmoduleInit;
+import cn.annoreg.mc.RegInit;
 import cn.annoreg.mc.network.RegNetworkCall;
 import cn.annoreg.mc.s11n.StorageOption;
 import cn.liutils.util.helper.KeyHandler;
@@ -37,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author WeAthFolD
  */
 @Registrant
-@RegSubmoduleInit(side = RegSubmoduleInit.Side.CLIENT_ONLY)
+@RegInit(side = RegInit.Side.CLIENT_ONLY)
 @RegEventHandler(Bus.FML)
 public class WeaponControllerClient {
 	

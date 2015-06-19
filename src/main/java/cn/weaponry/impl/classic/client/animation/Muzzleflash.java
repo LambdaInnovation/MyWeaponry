@@ -97,7 +97,7 @@ public class Muzzleflash extends Animation {
 		RenderUtils.loadTexture(texture == null ? MISSING : texture);
 		GL11.glTranslated(x, y, z);
 		
-		material.texture = texture;
+		material.setTexture(texture);
 		GL11.glScaled(size, size, size);
 		material.color.a = alpha * 0.8;
 		GL11.glRotatef(90, 0, 1, 0);

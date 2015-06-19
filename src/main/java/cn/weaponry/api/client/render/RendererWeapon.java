@@ -31,7 +31,6 @@ import cn.weaponry.api.ItemInfoProxy;
  */
 public class RendererWeapon implements IItemRenderer {
 	
-	//TODO: Data heavy, use json to load those data
 	public CompTransform 
 		stdTransform = new CompTransform(), 
 		fpTransform = new CompTransform(), 
