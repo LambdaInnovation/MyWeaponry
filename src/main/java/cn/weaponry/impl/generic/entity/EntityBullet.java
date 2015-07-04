@@ -107,7 +107,7 @@ public class EntityBullet extends EntityAdvanced {
 		
 		Rigidbody rb = new Rigidbody();
 		this.addMotionHandler(rb);
-		rb.filter = new IEntitySelector() {
+		rb.entitySel = new IEntitySelector() {
 			@Override
 			public boolean isEntityApplicable(Entity e) {
 				return spawner == null || !e.equals(spawner);
