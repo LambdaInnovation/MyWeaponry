@@ -1,0 +1,37 @@
+/**
+ * Copyright (c) Lambda Innovation, 2013-2015
+ * 本作品版权由Lambda Innovation所有。
+ * http://www.li-dev.cn/
+ *
+ * This project is open-source, and it is distributed under
+ * the terms of GNU General Public License. You can modify
+ * and distribute freely as long as you follow the license.
+ * 本项目是一个开源项目，且遵循GNU通用公共授权协议。
+ * 在遵照该协议的情况下，您可以自由传播和修改。
+ * http://www.gnu.org/licenses/gpl.html
+ */
+package cn.weaponry.api.serialization;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * When a field of an object is marked with the interface, it will not be marked and serialized by AutoSerializer.
+ * @author WeAthFolD
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SerOption {
+	
+	/**
+	 * @return Whether this field is to be excluded on auto serialization, default false
+	 */
+	public boolean exclude() default false;
+	/**
+	 * @return Whether this field supports null value on auto serialization, default false
+	 */
+	public boolean nullable() default false;
+	
+}
