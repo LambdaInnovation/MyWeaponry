@@ -10,7 +10,7 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry.api.serialization;
+package cn.weaponry.core;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -23,7 +23,9 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
-import cn.weaponry.core.Weaponry;
+import cn.weaponry.api.serialization.SerOption;
+import cn.weaponry.api.serialization.Serializer;
+import cn.weaponry.api.serialization.WSerialization;
 import io.netty.buffer.ByteBuf;
 
 /**

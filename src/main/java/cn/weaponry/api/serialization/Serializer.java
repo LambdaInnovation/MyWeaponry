@@ -17,6 +17,8 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 
 /**
+ * Serializer handles serialization and deserialization of a certain kind of object.
+ * You should use {@link WSerialization#addSerializer(Class, Serializer)} to register a Serializer.
  * @author WeAthFolD
  */
 public interface Serializer<T> {

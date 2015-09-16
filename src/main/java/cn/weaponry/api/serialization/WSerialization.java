@@ -20,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.base.Optional;
 
+import cn.weaponry.core.AutoSerializer;
 import cn.weaponry.core.SideHelper;
 import cn.weaponry.core.Weaponry;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -31,6 +32,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 /**
+ * Global serialization manager.
  * @author WeAthFolD
  */
 public enum WSerialization {
@@ -41,6 +43,11 @@ public enum WSerialization {
 	private Map<String, Serializer> table = new HashMap();
 	private Map<String, AutoSerializer> cachedAuto = new HashMap();
 	
+	/**
+	 * Adds a serializer.
+	 * @param klass The base class that this serializer handles. (Will also handle any subtype if no more 'direct' serializer was found)
+	 * @param serializer
+	 */
 	public <T> void addSerializer(Class<? extends T> klass, Serializer<T> serializer) {
 		String id = toClassIdentifier(klass);
 		if(table.containsKey(id))
@@ -49,25 +56,19 @@ public enum WSerialization {
 		table.put(id, serializer);
 	}
 	
-	public <T> Pair<String, Serializer<T>> getSerializerByObj(T object) {
-		Class klass = object.getClass();
-		while(klass != null) {
-			String id = toClassIdentifier(klass);
-			Serializer<T> ser = table.get(id);
-			if(ser != null)
-				return Pair.of(id, ser);
-			klass = klass.getSuperclass();
-		}
-		return null;
-	}
-	
+	/**
+	 * Serialize an object and write the data to the given buf.
+	 * If the Serializer of the object is not present, will try to create an auto serializer for it.
+	 * @param buf
+	 * @param object
+	 */
 	public <T> void serialize(ByteBuf buf, T object) {
 		if(object == null) {
 			ByteBufUtils.writeUTF8String(buf, NULL_ID);
 			return;
 		}
 		
-		Pair<String, Serializer<T>> pair = getSerializerByObj(object);
+		Pair<String, Serializer<T>> pair = getSerializer(object);
 		if(pair == null) {
 			String id = toClassIdentifier(object.getClass());
 			pair = Pair.of(id, getAutoSerializer(id));
@@ -84,6 +85,7 @@ public enum WSerialization {
 	
 	/**
 	 * Deserialize an object from the given buf.
+	 * If the Serializer of the object is not present, will try to create an auto serializer for it.
 	 * @param buf the buf to read from
 	 * @return null when deserialization failed, Optional with absent value when the object is serialized with null, 
 	 * 	and the Optional with the given object when successful.
@@ -110,6 +112,18 @@ public enum WSerialization {
 			Weaponry.log.warn("Serialization failed on " + id + ".");
 		}
 		return ret == null ? null : Optional.of(ret);
+	}
+	
+	private <T> Pair<String, Serializer<T>> getSerializer(T object) {
+		Class klass = object.getClass();
+		while(klass != null) {
+			String id = toClassIdentifier(klass);
+			Serializer<T> ser = table.get(id);
+			if(ser != null)
+				return Pair.of(id, ser);
+			klass = klass.getSuperclass();
+		}
+		return null;
 	}
 	
 	private <T> AutoSerializer<T> getAutoSerializer(String id) {

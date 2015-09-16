@@ -18,7 +18,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When a field of an object is marked with the interface, it will not be marked and serialized by AutoSerializer.
+ * Use this anno to specify the option of auto serializing on any field of the object to be auto serialized.
  * @author WeAthFolD
  */
 @Target(ElementType.FIELD)
