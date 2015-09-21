@@ -18,13 +18,27 @@ import io.netty.buffer.ByteBuf;
 
 /**
  * Serializer handles serialization and deserialization of a certain kind of object.
+ * It should be guaranteed that when using the same serializer to serialize the same object, 
+ * 	the amt of bytes written is equal to the bytes read.
  * You should use {@link WSerialization#addSerializer(Class, Serializer)} to register a Serializer.
  * @author WeAthFolD
  */
 public interface Serializer<T> {
 	
+	/**
+	 * Write an object to the byte buffer.
+	 * @param buf
+	 * @param obj The object to serialize
+	 * @throws IOException if serialization failed
+	 */
 	public abstract void write(ByteBuf buf, T obj) throws IOException;
 	
+	/**
+	 * Read an object from the byte buffer.
+	 * @param buf
+	 * @return The deserialized object if successful
+	 * @throws IOException if deserialization failed
+	 */
 	public abstract T read(ByteBuf buf) throws IOException;
 	
 }

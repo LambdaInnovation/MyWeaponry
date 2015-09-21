@@ -41,7 +41,7 @@ public class AutoSerializer<T> implements Serializer<T> {
 	final List<Wrapper> handledFields = new ArrayList();
 	final Class<T> handledClass;
 
-	public AutoSerializer(Class<T> _handledClass) {
+	public AutoSerializer(Class<T> _handledClass) { 
 		handledClass = _handledClass;
 		List<Field> list = new ArrayList(Arrays.asList(handledClass.getFields()));
 		

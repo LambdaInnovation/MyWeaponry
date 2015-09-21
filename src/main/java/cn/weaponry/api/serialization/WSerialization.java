@@ -87,8 +87,8 @@ public enum WSerialization {
 	 * Deserialize an object from the given buf.
 	 * If the Serializer of the object is not present, will try to create an auto serializer for it.
 	 * @param buf the buf to read from
-	 * @return null when deserialization failed, Optional with absent value when the object is serialized with null, 
-	 * 	and the Optional with the given object when successful.
+	 * @return null when deserialization failed, <code>Optional.absent()</code> value when the object is serialized with null, 
+	 * 	and the <code>Optional</code> with the given object when successful.
 	 */
 	public <T> Optional<T> deserialize(ByteBuf buf) {
 		String id = ByteBufUtils.readUTF8String(buf);
