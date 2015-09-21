@@ -83,7 +83,10 @@ public class AutoSerializer<T> implements Serializer<T> {
 				Field f = w.field;
 				Object obj;
 				Optional<T> res = WSerialization.INSTANCE.deserialize(buf);
-				if(res == null || !res.isPresent())
+				if(res == null)
+					throw new RuntimeException();
+				
+				if(!res.isPresent())
 					obj = null;
 				else 
 					obj = res.get();
