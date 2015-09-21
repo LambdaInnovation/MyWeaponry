@@ -38,7 +38,8 @@ public class WpnEventLoader {
 			if(m.isAnnotationPresent(WeaponCallback.class)) {
 				WeaponCallback anno = m.getAnnotation(WeaponCallback.class);
 				Side side = FMLCommonHandler.instance().getSide();
-				if((anno.side() == Side.CLIENT && side == Side.CLIENT) || side == Side.SERVER) {
+				if((anno.side() == Side.CLIENT && side == Side.CLIENT) || anno.side() == Side.SERVER) {
+					//System.out.println("Registered " + m.getName() + " as WpnEventHandler");
 					target.regEventHandler(new Callback((Class<? extends Event>) m.getParameterTypes()[1], m, eventProvider, anno.side()));
 				}
 //				System.out.println("Registered " + m.getName() + " as WpnEventHandler");
@@ -62,8 +63,9 @@ public class WpnEventLoader {
 		@Override
 		public void handleEvent(ItemInfo item, Event event) {
 			try {
-				if(!side || item.player.worldObj.isRemote == side)
+				if(item.player.worldObj.isRemote == side) {
 					method.invoke(obj, item, event);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

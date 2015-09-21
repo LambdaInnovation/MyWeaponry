@@ -1,13 +1,13 @@
 /**
  * Copyright (c) Lambda Innovation, 2013-2015
- * 本作品版权由Lambda Innovation所有。
+ * 譛ｬ菴懷刀迚域揀逕ｱLambda Innovation謇�譛峨��
  * http://www.li-dev.cn/
  *
  * This project is open-source, and it is distributed under  
  * the terms of GNU General Public License. You can modify
  * and distribute freely as long as you follow the license.
- * 本项目是一个开源项目，且遵循GNU通用公共授权协议。
- * 在遵照该协议的情况下，您可以自由传播和修改。
+ * 譛ｬ鬘ｹ逶ｮ譏ｯ荳�荳ｪ蠑�貅宣｡ｹ逶ｮ�ｼ御ｸ秘�ｵ蠕ｪGNU騾夂畑蜈ｬ蜈ｱ謗域揀蜊剰ｮｮ縲�
+ * 蝨ｨ驕ｵ辣ｧ隸･蜊剰ｮｮ逧�諠�蜀ｵ荳具ｼ梧お蜿ｯ莉･閾ｪ逕ｱ莨�謦ｭ蜥御ｿｮ謾ｹ縲�
  * http://www.gnu.org/licenses/gpl.html
  */
 package cn.weaponry.api.client.render;
@@ -17,9 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-
-import org.apache.commons.lang3.NotImplementedException;
-
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.util.generic.RegistryUtils;
 import cn.weaponry.api.ItemInfo;
@@ -167,7 +164,7 @@ public class RenderInfo extends Action {
 		}
 		
 		public void load(ObjectNamespace ns) {
-			throw new NotImplementedException("Can't load this animation");
+			throw new RuntimeException("Can't load this animation");
 		}
 		
 	}

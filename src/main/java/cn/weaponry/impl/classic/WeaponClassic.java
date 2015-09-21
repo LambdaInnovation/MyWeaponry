@@ -14,16 +14,11 @@ package cn.weaponry.impl.classic;
 
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
+import cn.liutils.util.helper.Motion3D;
+import cn.liutils.util.mc.EntitySelectors;
+import cn.liutils.util.raytrace.Raytrace;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.action.Action;
 import cn.weaponry.api.client.render.PartedModel;
@@ -54,6 +49,17 @@ import cn.weaponry.impl.generic.entity.EntityBullet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 /**
  * <code>WeaponClassic</code> provides a schema for a Half-Life like or CS-like weapon. <br/>
@@ -137,9 +143,39 @@ public class WeaponClassic extends WeaponBase {
 	
 	@WeaponCallback(side = Side.CLIENT)
 	@SideOnly(Side.CLIENT)
-	public void onShoot(ItemInfo item, ShootEvent event) {
+	public void onShootCli(ItemInfo item, ShootEvent event) {
 		item.addAction(screenUplift.copy());
 		RenderInfo.get(item).addAnimation(recoilAnim.copy());
+		RenderInfo.get(item).addAnimation(animMuzzleflash.copy());
+	}
+	
+	@WeaponCallback(side = Side.SERVER)
+	public void onShootSvr(ItemInfo info, ShootEvent event) {
+		World world = info.getWorld();
+		EntityPlayer player = info.getPlayer();
+		//System.out.println("OnShootSvr called");
+		for(int i = 0; i < shootBucks; ++i) {
+			Motion3D mo = new Motion3D(player, true);
+			mo.setMotionOffset(shootScatter);
+			Vec3 start = mo.getPosVec(), end = mo.move(40).getPosVec();
+			MovingObjectPosition trace = Raytrace.perform(world, start, end, EntitySelectors.excludeOf(player));
+			if(trace != null && trace.typeOfHit == MovingObjectType.ENTITY) {
+				trace.entityHit.hurtResistantTime = -1;
+				trace.entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), shootDamage);
+			}
+		}
+	}
+	
+	@WeaponCallback(side = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
+	public void spawnClientBullet(ItemInfo info, ShootEvent event) {
+		World world = info.getWorld();
+		for(int i = 0; i < shootBucks; ++i) {
+			Entity spawn = createBulletEffect(info);
+			if(spawn != null) {
+				world.spawnEntityInWorld(spawn);
+			}
+		}
 	}
 	
 	@WeaponCallback(side = Side.CLIENT)
@@ -147,7 +183,8 @@ public class WeaponClassic extends WeaponBase {
 	public void onReload(ItemInfo item, StartReloadEvent event) {
 		RenderInfo.get(item).addAnimation(reloadAnim.copy());
 	}
-	
+
+
 	@Override
 	public void onInfoStart(ItemInfo info) {
 		super.onInfoStart(info);
@@ -178,7 +215,7 @@ public class WeaponClassic extends WeaponBase {
 	@Override
 	public void initStates(WeaponStateMachine machine) {
 		machine.addState("idle", new StateIdle());
-		machine.addState("reload", new StateReload());
+		machine.addState("reload", isBuckReload ? new StateBuckReload() : new StateReload());
 		machine.addState("shoot", new StateShoot());
 	}
 	
@@ -214,10 +251,10 @@ public class WeaponClassic extends WeaponBase {
 	}
 	
 	/**
-	 * Create the shooting entity to be spawned. The spawn is only down in server side.
+	 * Create the shooting entity to be spawned. The spawn is only down in client side.
 	 */
-	public Entity createShootEntity(ItemInfo item) {
-		return new EntityBullet(item.getPlayer(), shootScatter, shootDamage);
+	public Entity createBulletEffect(ItemInfo item) {
+		return new EntityBullet(item.getPlayer(), shootScatter);
 	}
 	
 	public class StateIdle extends WeaponState {
@@ -288,6 +325,32 @@ public class WeaponClassic extends WeaponBase {
 		}
 	}
 	
+	public class StateBuckReload extends WeaponState {
+		
+		@Override
+		public void tickState(int tick) {
+			if(tick % reloadTime == 0) {
+				// Load one buck
+				boolean quit = false;
+				if(post(getItem(), new CanReload())) {
+					post(getItem(), new ReloadEvent());
+					if(ammoStrategy.getAmmo(getStack()) == ammoStrategy.getMaxAmmo(getStack())) {
+						quit = true;
+					} else {
+						if(!isRemote()) {
+							reloadStrategy.doReload(getPlayer(), getStack());
+						}
+						SoundUtils.playBothSideSound(getPlayer(), reloadEndSound);
+					}
+				} else
+					quit = true;
+				
+				if(quit)
+					transitState("idle");
+			}
+		}
+	}
+	
 	public class StateShoot extends WeaponState {
 		//Shoot->(Release ML)->Idle
 		
@@ -325,21 +388,9 @@ public class WeaponClassic extends WeaponBase {
 			}
 			
 			post(getItem(), new ShootEvent());
-			
 			SoundUtils.playBothSideSound(getPlayer(), shootSound);
-			ammoStrategy.consumeAmmo(getPlayer(), getStack(), 1);
-			
-			if(!isRemote()) {
-				World world = getWorld();
-				for(int i = 0; i < shootBucks; ++i) {
-					Entity spawn = createShootEntity(getItem());
-					if(spawn != null) {
-						world.spawnEntityInWorld(spawn);
-					}
-				}
-			} else {
-				RenderInfo.get(getItem()).addAnimation(animMuzzleflash.copy());
-			}
+			if(!isRemote())
+				ammoStrategy.consumeAmmo(getPlayer(), getStack(), 1);
 			
 			return true;
 		}

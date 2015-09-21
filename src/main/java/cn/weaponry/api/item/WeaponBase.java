@@ -87,6 +87,7 @@ public abstract class WeaponBase extends ItemSword implements IItemInfoProvider,
 		List<WpnEventHandler> list = handledEvents.get(event.getClass());
 		if(list != null) {
 			for(WpnEventHandler handler : list) {
+				//System.out.println("Handle " + handler + "/" + item.getPlayer().worldObj.isRemote);
 				handler.handleEvent(item, event);
 			}
 			return !event.isCanceled();

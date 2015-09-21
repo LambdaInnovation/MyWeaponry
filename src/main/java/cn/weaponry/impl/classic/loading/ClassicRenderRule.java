@@ -15,10 +15,10 @@ package cn.weaponry.impl.classic.loading;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.ModelFormatException;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 import cn.liutils.loading.Loader.ObjectNamespace;
 import cn.liutils.loading.item.ItemLoadRule;
-import cn.liutils.util.generic.DebugUtils;
 import cn.weaponry.api.client.render.CompTransform;
 import cn.weaponry.api.client.render.PartedObjModel;
 import cn.weaponry.api.client.render.RendererWeapon;
@@ -84,11 +84,21 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 	}
 	
 	protected WavefrontObject loadModel() {
-		return new WavefrontObject(new ResourceLocation(ns.getString("render", "model")));
+		try {
+			return new WavefrontObject(new ResourceLocation(ns.getString("render", "model")));
+		} catch(ModelFormatException e) {
+			return null;
+		} catch(NullPointerException e) {
+			return null;
+		}
 	}
 	
 	protected ResourceLocation loadTexture() {
-		return new ResourceLocation(ns.getString("render", "texture"));
+		try {
+			return new ResourceLocation(ns.getString("render", "texture"));
+		} catch(NullPointerException e) {
+			return null;
+		}
 	}
 	
 	protected void lookComp(RendererWeapon render, CompTransform ct, String compName) {

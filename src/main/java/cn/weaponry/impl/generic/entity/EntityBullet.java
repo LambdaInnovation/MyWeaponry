@@ -40,11 +40,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * This entity is now just for client effect.
  * @author WeAthFolD
- *
  */
 @Registrant
-@RegEntity
+@RegEntity(clientOnly = true)
 @RegEntity.HasRender
 public class EntityBullet extends EntityAdvanced {
 	
@@ -56,23 +56,18 @@ public class EntityBullet extends EntityAdvanced {
 	
 	double scatter;
 	
-	float damage;
-	
 	EntityLivingBase spawner;
-	
-	float yaw, pitch;
 	
 	Motion3D m3d;
 	
-	public EntityBullet(EntityPlayer player, double scatter, float dmg) {
-		this(player, new Motion3D(player, true), scatter, dmg);
+	public EntityBullet(EntityPlayer player, double scatter) {
+		this(player, new Motion3D(player, true), scatter);
 	}
 
-	public EntityBullet(EntityLivingBase _spawner, Motion3D m3d, double scatter, float dmg) {
+	public EntityBullet(EntityLivingBase _spawner, Motion3D m3d, double scatter) {
 		this(_spawner.worldObj);
 		
 		spawner = _spawner;
-		damage = dmg;
 		this.scatter = scatter;
 		
 		m3d.normalize();
@@ -85,21 +80,6 @@ public class EntityBullet extends EntityAdvanced {
 		motionZ = m3d.vz * vel;
 		
 		this.m3d = m3d;
-		
-		this.regEventHandler(new CollideHandler() {
-			@Override
-			public void onEvent(CollideEvent event) {
-				EntityBullet.this.setDead();
-				
-				if(!worldObj.isRemote) {
-					MovingObjectPosition result = event.result;
-					if(result != null && result.entityHit != null) {
-						result.entityHit.hurtResistantTime = -1;
-						result.entityHit.attackEntityFrom(DamageSource.causeMobDamage(spawner), damage);
-					}
-				}
-			}
-		});
 	}
 	
 	public EntityBullet(World world) {
@@ -107,7 +87,7 @@ public class EntityBullet extends EntityAdvanced {
 		
 		Rigidbody rb = new Rigidbody();
 		this.addMotionHandler(rb);
-		rb.filter = new IEntitySelector() {
+		rb.entitySel = new IEntitySelector() {
 			@Override
 			public boolean isEntityApplicable(Entity e) {
 				return spawner == null || !e.equals(spawner);
@@ -144,6 +124,7 @@ public class EntityBullet extends EntityAdvanced {
 		public void doRender(Entity entity, double par2, double par4,
 				double par6, float par8, float par9) {
 			EntityBullet bullet = (EntityBullet) entity;
+			this.fpOffsetX = 0.5;
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			super.doRender(entity, par2, par4, par6, par8, par9);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);

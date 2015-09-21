@@ -56,6 +56,8 @@ public class ClassicReloadStrategy implements ReloadStrategy {
 		AmmoStrategy ammoStrategy = weapon.ammoStrategy;
 		
 		int need = ammoStrategy.getMaxAmmo(stack) - ammoStrategy.getAmmo(stack);
+		if(weapon.isBuckReload) need = Math.min(1, need);
+		
 		int need2 = need;
 		
 		int i = 0;

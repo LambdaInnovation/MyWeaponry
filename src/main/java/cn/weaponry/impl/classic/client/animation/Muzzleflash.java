@@ -93,6 +93,8 @@ public class Muzzleflash extends Animation {
 		}
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		GL11.glPushMatrix();
 		RenderUtils.loadTexture(texture == null ? MISSING : texture);
 		GL11.glTranslated(x, y, z);
@@ -105,6 +107,7 @@ public class Muzzleflash extends Animation {
 		GL11.glColor4d(1, 1, 1, 1);
 		
 		GL11.glPopMatrix();
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 	}
 	
