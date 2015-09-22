@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import cn.annoreg.core.Registrant;
 import cn.liutils.registry.RegDataPart;
 import cn.liutils.util.helper.DataPart;
+import cn.liutils.util.helper.PlayerData;
 import cn.weaponry.core.IterativeList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,25 +40,7 @@ public class ItemInfo extends DataPart {
 	
 	@Override
 	public void tick() {
-		EntityPlayer player = getPlayer();
-		ItemStack current = player.getCurrentEquippedItem();
-		if(!stackEquals(current)) {
-			if(requiresInfo()) {
-				((IRequiresInfo) stack.getItem()).onInfoDestroyed(this);
-			}
-			stack = null;
-			created = false;
-		}
-		
-		if(stack != null) {
-			if(requiresInfo()) {
-				if(!created) {
-					created = true;
-					reset();
-					((IRequiresInfo) stack.getItem()).onInfoCreated(this);
-				}
-			}
-		}
+		checkStack();
 		
 		actions.startIterating();
 		Iterator<Action> iter = actions.iterator();
@@ -111,6 +94,28 @@ public class ItemInfo extends DataPart {
 		}
 		actions.endIterating();
 	}
+	
+	private void checkStack() {
+		EntityPlayer player = getPlayer();
+		ItemStack current = player.getCurrentEquippedItem();
+		if(!stackEquals(current)) {
+			if(created) {
+				((IRequiresInfo) stack.getItem()).onInfoDestroyed(this);
+			}
+			stack = null;
+			created = false;
+		}
+		
+		if(stack != null) {
+			if(requiresInfo()) {
+				if(!created) {
+					created = true;
+					reset();
+					((IRequiresInfo) stack.getItem()).onInfoCreated(this);
+				}
+			}
+		}
+	}
 
 	private boolean stackEquals(ItemStack other) {
 		return stack != null && stack.getItem() == other.getItem();
@@ -118,6 +123,12 @@ public class ItemInfo extends DataPart {
 	
 	private boolean requiresInfo() {
 		return stack != null && stack.getItem() instanceof IRequiresInfo;
+	}
+	
+	public static ItemInfo get(EntityPlayer player) {
+		ItemInfo ret = PlayerData.get(player).getPart(ItemInfo.class);
+		ret.checkStack();
+		return ret;
 	}
 	
 }
