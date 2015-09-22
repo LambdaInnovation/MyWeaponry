@@ -22,6 +22,9 @@ public class ModKeyConfig {
 	private static KeyConfig defaultConfig = new KeyConfigBuilder()
 			.add(KeyManager.MOUSE_LEFT, 0).add(KeyManager.MOUSE_RIGHT, 1).toConfig();
 	
+	/**
+	 * Update the key config of current loaded mod. Should be called in loading phase.
+	 */
 	public static void update(KeyConfig config) {
 		ModContainer container = Loader.instance().activeModContainer();
 		if(container == null)
