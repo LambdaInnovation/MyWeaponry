@@ -19,10 +19,12 @@ import cn.annoreg.core.Registrant;
 import cn.liutils.registry.RegDataPart;
 import cn.liutils.util.helper.DataPart;
 import cn.liutils.util.helper.PlayerData;
+import cn.weaponry.api.event.ItemInfoCreateEvent;
 import cn.weaponry.core.IterativeList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * @author WeAthFolD
@@ -41,6 +43,7 @@ public class ItemInfo extends DataPart {
 	@Override
 	public void tick() {
 		checkStack();
+		//System.out.println("Ticking WMItem");
 		
 		actions.startIterating();
 		Iterator<Action> iter = actions.iterator();
@@ -64,6 +67,7 @@ public class ItemInfo extends DataPart {
 	}
 	
 	public void addAction(Action action) {
+		action.info = this;
 		actions.add(action);
 		action.onStart();
 	}
@@ -83,25 +87,28 @@ public class ItemInfo extends DataPart {
 		return stack;
 	}
 	
-	private void reset() {
+	private void resetActions() {
 		actions.startIterating();
 		Iterator<Action> iter = actions.iterator();
 		while(iter.hasNext()) {
 			Action a = iter.next();
 			a.onAbort();
 			a.onFinalize();
-			iter.remove();
 		}
 		actions.endIterating();
+		actions.clear();
 	}
 	
 	private void checkStack() {
 		EntityPlayer player = getPlayer();
 		ItemStack current = player.getCurrentEquippedItem();
+		//System.out.println("created: " + created);
+		
 		if(!stackEquals(current)) {
 			if(created) {
 				((IRequiresInfo) stack.getItem()).onInfoDestroyed(this);
 			}
+			resetActions();
 			stack = null;
 			created = false;
 		}
@@ -110,15 +117,18 @@ public class ItemInfo extends DataPart {
 			if(requiresInfo()) {
 				if(!created) {
 					created = true;
-					reset();
+					resetActions();
 					((IRequiresInfo) stack.getItem()).onInfoCreated(this);
+					MinecraftForge.EVENT_BUS.post(new ItemInfoCreateEvent(this));
 				}
 			}
 		}
+		
+		stack = current;
 	}
 
 	private boolean stackEquals(ItemStack other) {
-		return stack != null && stack.getItem() == other.getItem();
+		return stack != null && other != null && stack.getItem() == other.getItem();
 	}
 	
 	private boolean requiresInfo() {

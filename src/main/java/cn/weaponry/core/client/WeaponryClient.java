@@ -1,0 +1,12 @@
+package cn.weaponry.core.client;
+
+import cn.liutils.util.helper.KeyManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
+public class WeaponryClient {
+	
+	public static KeyManager dynKeyManager = new KeyManager();
+	
+}

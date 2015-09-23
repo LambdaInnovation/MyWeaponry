@@ -15,12 +15,12 @@ package cn.weaponry.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cn.annoreg.core.RegistrationManager;
+import cn.annoreg.core.RegistrationMod;
 import cn.weaponry.test.SerializationTest;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -32,6 +32,7 @@ import net.minecraftforge.common.config.Configuration;
  * @author WeathFolD
  */
 @Mod(modid = "weaponry", name = "MyWeaponry", version = Weaponry.VERSION)
+@RegistrationMod(pkg = "cn.weaponry", res = "weaponry")
 public class Weaponry {
 	
 	private static final String NET_CHANNEL = "weaponry";
@@ -48,16 +49,26 @@ public class Weaponry {
 	public static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(NET_CHANNEL);
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {}
+	public void preInit(FMLPreInitializationEvent event) {
+		log.info("Starting MyWeaponry ver" + VERSION);
+		log.info("Copyright (c) Lambda Innovation, 2015.");
+		log.info("http://li-dev.cn/");
+		
+		RegistrationManager.INSTANCE.registerAll(this, "PreInit");
+	}
 	
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
 		config = new Configuration(event.getSuggestedConfigurationFile());
+		
+		RegistrationManager.INSTANCE.registerAll(this, "Init");
 	}
 	
 	@EventHandler
 	public void postInit(FMLPreInitializationEvent event) {
 		SerializationTest.run();
+		
+		RegistrationManager.INSTANCE.registerAll(this, "PostInit");
 	}
 	
 	@EventHandler()

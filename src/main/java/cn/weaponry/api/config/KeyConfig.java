@@ -2,6 +2,7 @@ package cn.weaponry.api.config;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -12,6 +13,7 @@ import com.google.common.collect.ImmutableMap;
  */
 public class KeyConfig {
 	
+	// Keyboard Key => Virtual Key ID
 	Map<Integer, Integer> mapping;
 	
 	KeyConfig(Map<Integer, Integer> init) {
@@ -24,6 +26,10 @@ public class KeyConfig {
 	
 	public Collection<Integer> availableKeyIDs() {
 		return mapping.values();
+	}
+	
+	public Collection<Entry<Integer, Integer>> enumeration() {
+		return mapping.entrySet();
 	}
 	
 	public int size() {

@@ -12,6 +12,7 @@
  */
 package cn.weaponry.api.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class KeyConfigBuilder {
 	
-	private Map<Integer, Integer> mapping;
+	private Map<Integer, Integer> mapping = new HashMap();
 	
 	public KeyConfigBuilder() {}
 	
