@@ -46,15 +46,7 @@ public class WController extends Action {
 	public void onTick() {}
 	
 	@Override
-	public void onEnd() {
-		for(Key k : keys) {
-			k.onKeyAbort();
-			WeaponryClient.dynKeyManager.removeKeyHandler(getKeyName(k.keyid));
-		}
-	}
-	
-	@Override
-	public void onAbort() {
+	public void onFinalize() {
 		for(Key k : keys) {
 			k.onKeyAbort();
 			WeaponryClient.dynKeyManager.removeKeyHandler(getKeyName(k.keyid));
