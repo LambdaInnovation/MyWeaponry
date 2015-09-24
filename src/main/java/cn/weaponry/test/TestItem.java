@@ -56,12 +56,12 @@ public class TestItem extends Item implements IControllableItem, IRequiresInfo, 
 		}
 	}
 	
-	@ItemCallback(side = Side.CLIENT)
+	@ItemCallback(Side.CLIENT)
 	public void onFuckClient(ItemInfo info, FuckEvent event) {
 		System.out.println(event + "/CLIENT");
 	}
 	
-	@ItemCallback(side = Side.SERVER)
+	@ItemCallback(Side.SERVER)
 	public void onFuckServer(ItemInfo info, FuckEvent event) {
 		System.out.println(event + "/SERVER");
 	}

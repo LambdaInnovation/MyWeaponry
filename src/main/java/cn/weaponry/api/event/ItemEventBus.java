@@ -47,7 +47,7 @@ public class ItemEventBus implements IItemEventHandler {
 		for(Method m : callbackProvider.getClass().getMethods()) {
 			if(m.isAnnotationPresent(ItemCallback.class)) {
 				ItemCallback anno = m.getAnnotation(ItemCallback.class);
-				addRawHandler(m.getParameterTypes()[1], new Wrapper(callbackProvider, m, anno.side() == Side.CLIENT));
+				addRawHandler(m.getParameterTypes()[1], new Wrapper(callbackProvider, m, anno.value() == Side.CLIENT));
 			}
 		}
 	}

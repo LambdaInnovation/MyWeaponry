@@ -58,7 +58,7 @@ public class Weaponry {
 		log.info("Copyright (c) Lambda Innovation, 2015.");
 		log.info("http://li-dev.cn/");
 		
-		//network.registerMessage(ItemEventMessage.Handler.class, ItemEventMessage.class, ID_ITEMEVENT_CL, Side.CLIENT);
+		network.registerMessage(ItemEventMessage.Handler.class, ItemEventMessage.class, ID_ITEMEVENT_CL, Side.CLIENT);
 		network.registerMessage(ItemEventMessage.Handler.class, ItemEventMessage.class, ID_ITEMEVENT_CL, Side.SERVER);
 		
 		RegistrationManager.INSTANCE.registerAll(this, "PreInit");

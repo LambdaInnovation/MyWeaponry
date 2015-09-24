@@ -28,6 +28,6 @@ import cpw.mods.fml.relauncher.Side;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ItemCallback {
 	
-	Side side() default Side.SERVER;
+	Side value();
 	
 }
