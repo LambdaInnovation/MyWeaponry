@@ -19,7 +19,7 @@ import cn.annoreg.core.Registrant;
 import cn.liutils.registry.RegDataPart;
 import cn.liutils.util.helper.DataPart;
 import cn.liutils.util.helper.PlayerData;
-import cn.weaponry.api.event.ItemInfoCreateEvent;
+import cn.weaponry.api.forgeevent.ItemInfoCreateEvent;
 import cn.weaponry.core.IterativeList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

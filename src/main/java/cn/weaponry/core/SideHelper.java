@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 public class SideHelper {
 	
 	public static World getWorld(int dimension) {
-		if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
 			return getWorldClient(dimension);
 		} else {
 			return MinecraftServer.getServer().worldServerForDimension(dimension);

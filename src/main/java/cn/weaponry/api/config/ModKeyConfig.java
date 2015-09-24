@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.liutils.util.helper.KeyManager;
-import cn.weaponry.api.event.KeyConfigUpdateEvent;
+import cn.weaponry.api.forgeevent.KeyConfigUpdateEvent;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;

@@ -10,7 +10,7 @@
  * 在遵照该协议的情况下，您可以自由传播和修改。
  * http://www.gnu.org/licenses/gpl.html
  */
-package cn.weaponry.api.event;
+package cn.weaponry.api.forgeevent;
 
 import cn.weaponry.api.runtime.ItemInfo;
 import cpw.mods.fml.common.eventhandler.Event;

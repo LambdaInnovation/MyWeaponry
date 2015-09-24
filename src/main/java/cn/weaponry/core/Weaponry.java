@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import cn.annoreg.core.RegistrationManager;
 import cn.annoreg.core.RegistrationMod;
+import cn.weaponry.core.network.ItemEventMessage;
 import cn.weaponry.test.SerializationTest;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -25,6 +26,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -46,6 +48,8 @@ public class Weaponry {
 	
 	public static Configuration config;
 	
+	private static final int ID_ITEMEVENT_CL = 0, ID_ITEMEVENT_SV = 1;
+	
 	public static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(NET_CHANNEL);
 	
 	@EventHandler
@@ -53,6 +57,9 @@ public class Weaponry {
 		log.info("Starting MyWeaponry ver" + VERSION);
 		log.info("Copyright (c) Lambda Innovation, 2015.");
 		log.info("http://li-dev.cn/");
+		
+		//network.registerMessage(ItemEventMessage.Handler.class, ItemEventMessage.class, ID_ITEMEVENT_CL, Side.CLIENT);
+		network.registerMessage(ItemEventMessage.Handler.class, ItemEventMessage.class, ID_ITEMEVENT_CL, Side.SERVER);
 		
 		RegistrationManager.INSTANCE.registerAll(this, "PreInit");
 	}

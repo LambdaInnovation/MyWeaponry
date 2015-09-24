@@ -12,23 +12,22 @@
  */
 package cn.weaponry.api.event;
 
-import cn.weaponry.api.config.KeyConfig;
-import cpw.mods.fml.common.eventhandler.Event;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import cpw.mods.fml.relauncher.Side;
 
 /**
- * Fired whenever a mod's key config is changed in CLIENT. (Not fired when normally added, so old is always available)
+ * Mark a method so that it is handled by ItemEventBus. The marked method must have 
+ *  signature like <code>(ItemInfo info, ??? event)V</code>.
  * @author WeAthFolD
  */
-public class KeyConfigUpdateEvent extends Event {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ItemCallback {
 	
-	public final String modid;
-	public final KeyConfig old;
-	public final KeyConfig replace;
-	
-	public KeyConfigUpdateEvent(String _modid, KeyConfig _old, KeyConfig _replace) {
-		modid = _modid;
-		old = _old;
-		replace = _replace;
-	}
+	Side side() default Side.SERVER;
 	
 }

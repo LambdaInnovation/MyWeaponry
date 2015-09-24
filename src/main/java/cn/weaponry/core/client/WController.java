@@ -12,12 +12,13 @@ import cn.weaponry.api.config.KeyConfig;
 import cn.weaponry.api.config.ModKeyConfig;
 import cn.weaponry.api.ctrl.IControllableItem;
 import cn.weaponry.api.ctrl.KeyPhase;
-import cn.weaponry.api.event.ItemInfoCreateEvent;
+import cn.weaponry.api.forgeevent.ItemInfoCreateEvent;
 import cn.weaponry.api.runtime.Action;
 import cn.weaponry.api.runtime.ItemInfo;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
 @SideOnly(Side.CLIENT)
@@ -114,10 +115,9 @@ public class WController extends Action {
 	public static class Events {
 		@SubscribeEvent
 		public void onInfoCreate(ItemInfoCreateEvent event) {
-			if(!event.info.isRemote())
+			if(!event.info.isRemote() || event.info.getPlayer() != Minecraft.getMinecraft().thePlayer)
 				return;
 			
-			System.out.println("OnInfoCreate");
 			ItemStack stack = event.info.getStack();
 			if(stack.getItem() instanceof IControllableItem) {
 				event.info.addAction(new WController());
