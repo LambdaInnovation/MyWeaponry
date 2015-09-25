@@ -75,10 +75,10 @@ public class ItemInfo extends DataPart {
 	/**
 	 * @return The action first found with given ID, or null if nothing was found.
 	 */
-	public Action findAction(String id) {
+	public <T extends Action> T findAction(String id) {
 		for(Action a : actions) {
 			if(a.id.equals(id))
-				return a;
+				return (T) a;
 		}
 		return null;
 	}

@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import cn.annoreg.core.Registrant;
 import cn.annoreg.mc.RegEventHandler;
 import cn.annoreg.mc.RegEventHandler.Bus;
+import cn.liutils.util.client.ControlOverrider;
 import cn.liutils.util.helper.KeyHandler;
 import cn.weaponry.api.config.KeyConfig;
 import cn.weaponry.api.config.ModKeyConfig;
@@ -40,6 +41,7 @@ public class WController extends Action {
 			Key k = new Key(entry.getKey(), entry.getValue());
 			WeaponryClient.dynKeyManager.addKeyHandler(getKeyName(entry.getValue()), entry.getKey(), k);
 			keys.add(k);
+			ControlOverrider.override(k.key);
 		}
 	}
 	
@@ -51,6 +53,7 @@ public class WController extends Action {
 		for(Key k : keys) {
 			k.onKeyAbort();
 			WeaponryClient.dynKeyManager.removeKeyHandler(getKeyName(k.keyid));
+			ControlOverrider.removeOverride(k.key);
 		}
 	}
 	

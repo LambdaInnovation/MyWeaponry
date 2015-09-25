@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import cn.annoreg.core.RegistrationManager;
 import cn.annoreg.core.RegistrationMod;
 import cn.weaponry.core.network.ItemEventMessage;
-import cn.weaponry.test.SerializationTest;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -73,8 +72,6 @@ public class Weaponry {
 	
 	@EventHandler
 	public void postInit(FMLPreInitializationEvent event) {
-		SerializationTest.run();
-		
 		RegistrationManager.INSTANCE.registerAll(this, "PostInit");
 	}
 	

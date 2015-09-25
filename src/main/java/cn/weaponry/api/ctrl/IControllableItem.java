@@ -19,4 +19,11 @@ public interface IControllableItem {
 	@SideOnly(Side.CLIENT)
 	void onKeyEvent(ItemInfo info, int keyID, KeyPhase phase);
 	
+	/**
+	 * @return Whether the key event from vanilla MC should be blocked when using this item.
+	 */
+	default boolean doesOverrideVanillaKey(int keyID) {
+		return true;
+	}
+	
 }	
