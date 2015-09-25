@@ -36,12 +36,15 @@ public class WController extends Action {
 	public void onStart() {
 		ItemInfo info = getInfo();
 		ItemStack stack = info.getStack();
+		IControllableItem item = (IControllableItem) stack.getItem();
 		KeyConfig config = ModKeyConfig.getConfig(stack.getItem());
 		for(Entry<Integer, Integer> entry : config.enumeration()) {
 			Key k = new Key(entry.getKey(), entry.getValue());
 			WeaponryClient.dynKeyManager.addKeyHandler(getKeyName(entry.getValue()), entry.getKey(), k);
 			keys.add(k);
-			ControlOverrider.override(k.key);
+			
+			if(item.doesOverrideVanillaKey(k.keyid))
+				ControlOverrider.override(k.key);
 		}
 	}
 	
@@ -50,10 +53,12 @@ public class WController extends Action {
 	
 	@Override
 	public void onFinalize() {
+		IControllableItem item = (IControllableItem) getInfo().getStack().getItem();
 		for(Key k : keys) {
 			k.onKeyAbort();
 			WeaponryClient.dynKeyManager.removeKeyHandler(getKeyName(k.keyid));
-			ControlOverrider.removeOverride(k.key);
+			if(item.doesOverrideVanillaKey(k.keyid))
+				ControlOverrider.removeOverride(k.key);
 		}
 	}
 	
