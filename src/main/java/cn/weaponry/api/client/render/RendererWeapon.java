@@ -22,6 +22,7 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 import cn.liutils.util.client.RenderUtils;
+import cn.liutils.util.generic.VecUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.ItemInfoProxy;
 
@@ -145,7 +146,7 @@ public class RendererWeapon implements IItemRenderer {
 	}
 	
 	private void doFirstPersonTansform() {
-		GL11.glTranslated(-.3, 0, 0);
+		
 	}
 //	
 	private void doThirdPersonTransform() {
