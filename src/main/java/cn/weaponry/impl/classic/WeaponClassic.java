@@ -157,7 +157,7 @@ public class WeaponClassic extends WeaponBase {
 		for(int i = 0; i < shootBucks; ++i) {
 			Motion3D mo = new Motion3D(player, true);
 			mo.setMotionOffset(shootScatter);
-			Vec3 start = mo.getPosVec(), end = mo.move(40).getPosVec();
+			Vec3 start = mo.getPosVec(), end = mo.move(60).getPosVec();
 			MovingObjectPosition trace = Raytrace.perform(world, start, end, EntitySelectors.excludeOf(player));
 			if(trace != null && trace.typeOfHit == MovingObjectType.ENTITY) {
 				trace.entityHit.hurtResistantTime = -1;
