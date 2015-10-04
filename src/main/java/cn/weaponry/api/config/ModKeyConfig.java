@@ -3,6 +3,8 @@ package cn.weaponry.api.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
+
 import cn.liutils.util.helper.KeyManager;
 import cn.weaponry.api.forgeevent.KeyConfigUpdateEvent;
 import cpw.mods.fml.common.Loader;
@@ -20,7 +22,10 @@ public class ModKeyConfig {
 	
 	private static Map<String, KeyConfig> modConfig = new HashMap();
 	private static KeyConfig defaultConfig = new KeyConfigBuilder()
-			.add(KeyManager.MOUSE_LEFT, 0).add(KeyManager.MOUSE_RIGHT, 1).toConfig();
+			.add(KeyManager.MOUSE_LEFT, 0)
+			.add(KeyManager.MOUSE_RIGHT, 1)
+			.add(Keyboard.KEY_R, 2)
+			.toConfig();
 	
 	/**
 	 * Update the key config of current loaded mod. Should be called in loading phase.

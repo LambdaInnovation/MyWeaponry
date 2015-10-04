@@ -12,9 +12,7 @@
  */
 package cn.weaponry.api.weapon;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cn.weaponry.api.client.animation.ItemAnimator;
 import cn.weaponry.api.ctrl.IControllableItem;
 import cn.weaponry.api.ctrl.KeyPhase;
 import cn.weaponry.api.event.EventSystem;
@@ -23,6 +21,8 @@ import cn.weaponry.api.event.ItemEventBus;
 import cn.weaponry.api.runtime.IRequiresInfo;
 import cn.weaponry.api.runtime.ItemInfo;
 import cn.weaponry.api.runtime.StateMachine;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
 
 /**
@@ -86,6 +86,14 @@ public abstract class WeaponBase extends Item implements IRequiresInfo, IItemEve
 			initStates(fsm);
 			info.addAction(fsm);
 		}
+		if(info.isRemote()) {
+			onInfoCreatedClient(info);
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private void onInfoCreatedClient(ItemInfo info) {
+		info.addAction(new ItemAnimator());
 	}
 
 	@Override
