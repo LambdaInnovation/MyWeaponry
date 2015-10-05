@@ -12,6 +12,8 @@
  */
 package cn.weaponry.impl.generic.action;
 
+import net.minecraft.entity.player.EntityPlayer;
+import cn.liutils.util.helper.Motion3D;
 import cn.weaponry.api.action.Action;
 import cn.weaponry.api.state.WeaponStateMachine;
 import cn.weaponry.impl.classic.WeaponClassic;
@@ -30,6 +32,8 @@ public class ScatterUpdater extends Action {
 	private int count;
 	private int cooldown;
 	
+	private double oldX, oldY, oldZ;
+	 
 	public void onStart() {
 		WeaponClassic weapon = (WeaponClassic) itemInfo.getItemType();
 		this.currentScatter = weapon.shootScatterMin;
@@ -39,44 +43,69 @@ public class ScatterUpdater extends Action {
 		if(this.shootScatterStability < 0)
 			this.shootScatterStability = 0;
 		this.count = 0;
+		EntityPlayer player = itemInfo.getPlayer();
+		this.oldX = player.posX;
+		this.oldY = player.posY;
+		this.oldZ = player.posZ;
 	}
 
 	public void onTick(int tick) {
 		//Reference:1-11, 2-8, 3-6
 		WeaponStateMachine machine = (WeaponStateMachine) itemInfo.getAction("StateMachine");
+		EntityPlayer player = itemInfo.getPlayer();
+		//System.out.println(moving);
 		if(machine != null){
-			if(machine.getCurrentState() != null && !(machine.getCurrentState() instanceof StateShoot)){
+			if(machine.getCurrentState() != null && machine.getCurrentState() instanceof StateShoot){
+				cooldown = 10;
+			}else{
+				double downMulti = 10;
+				boolean moving = player.posX != oldX || player.posY != oldY || player.posZ != oldZ;
+				
+				if(moving){
+					downMulti = 100;
+					
+					int multi = 3;
+					if(player.isSprinting())
+						multi = 2;
+					double maxScatter = shootScatterMin + (shootScatterMax - shootScatterMin)/multi,
+							phase = (shootScatterMax - shootScatterMin)/(multi * 10);
+					System.out.println(currentScatter);
+					System.out.println(maxScatter);
+					if(currentScatter < maxScatter ) {
+						currentScatter += phase;
+						if(currentScatter > maxScatter)
+							currentScatter = maxScatter;
+					}
+					oldX = player.posX;
+					oldY = player.posY;
+					oldZ = player.posZ;
+				}
 				
 				if(cooldown != 0)
 					cooldown--;
 				else{
 					count = 0;
-					//System.out.println("else");
-					if(currentScatter > shootScatterMin)
-						currentScatter -= (shootScatterMax - shootScatterMin)/20;
-					else
-						currentScatter = shootScatterMin;
+					if(currentScatter > shootScatterMin){
+						currentScatter -= (shootScatterMax - shootScatterMin)/downMulti;
+						if(currentScatter < shootScatterMin)
+							currentScatter = shootScatterMin;	
+					}		
 				}
 				
-			}else
-				cooldown = 10;
+			}	
 		}
 	}
 	
-	public double callShoot( ){
-		System.out.println(count + 1);
-		return getCurrentScatter();
-	}
-	
-	public double getCurrentScatter( ){
+	public void callShoot(){
 		if(currentScatter < shootScatterMax){
-			currentScatter += (1.25 * (Math.pow(2, shootScatterStability) - 1))/1000 * count * count;
+			currentScatter += 0.01 + (1.25 * (Math.pow(2, shootScatterStability) - 1))/1000 * count * count;
 			if(currentScatter > shootScatterMax)
 				currentScatter = shootScatterMax;
 		}	
-		else
-			currentScatter = shootScatterMax;
 		count++;
+	}
+	
+	public double getCurrentScatter(){
 		return currentScatter;
 	}
 	
