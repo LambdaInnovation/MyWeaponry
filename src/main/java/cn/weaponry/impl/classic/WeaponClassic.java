@@ -162,11 +162,12 @@ public class WeaponClassic extends WeaponBase {
 		for(int i = 0; i < shootBucks; ++i) {
 			Motion3D mo = new Motion3D(player, true);
 			
-			double scatter = ((ScatterUpdater)info.getAction("ScatterUpdater")).callShoot();
+			((ScatterUpdater)info.getAction("ScatterUpdater")).callShoot();
+			double scatter = ((ScatterUpdater)info.getAction("ScatterUpdater")).getCurrentScatter();
 			System.out.println("callShoot" + scatter);
 			mo.setMotionOffset(scatter);
 			
-			Vec3 start = mo.getPosVec(), end = mo.move(40).getPosVec();
+			Vec3 start = mo.getPosVec(), end = mo.move(108).getPosVec();
 			MovingObjectPosition trace = Raytrace.perform(world, start, end, EntitySelectors.excludeOf(player));
 			if(trace != null && trace.typeOfHit == MovingObjectType.ENTITY) {
 				trace.entityHit.hurtResistantTime = -1;
@@ -264,6 +265,7 @@ public class WeaponClassic extends WeaponBase {
 	 * Create the shooting entity to be spawned. The spawn is only down in client side.
 	 */
 	public Entity createBulletEffect(ItemInfo item) {
+		((ScatterUpdater)item.getAction("ScatterUpdater")).callShoot();
 		double scatter = ((ScatterUpdater)item.getAction("ScatterUpdater")).getCurrentScatter();
 		return new EntityBullet(item.getPlayer(), scatter);
 	}

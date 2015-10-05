@@ -13,7 +13,7 @@
 package cn.weaponry.impl.generic.action;
 
 import net.minecraft.entity.player.EntityPlayer;
-import cn.liutils.util.helper.Motion3D;
+import net.minecraft.util.Vec3;
 import cn.weaponry.api.action.Action;
 import cn.weaponry.api.state.WeaponStateMachine;
 import cn.weaponry.impl.classic.WeaponClassic;
@@ -56,21 +56,27 @@ public class ScatterUpdater extends Action {
 		//System.out.println(moving);
 		if(machine != null){
 			if(machine.getCurrentState() != null && machine.getCurrentState() instanceof StateShoot){
-				cooldown = 10;
+				cooldown = 5;
 			}else{
 				double downMulti = 10;
-				boolean moving = player.posX != oldX || player.posY != oldY || player.posZ != oldZ;
+				Vec3 motion = Vec3.createVectorHelper(player.posX - oldX, player.posY - oldY, player.posZ - oldZ);
+				if(motion.lengthVector() > 0)
+					System.out.println(motion.lengthVector());
+				boolean moving = motion.lengthVector() > 0.1;
 				
 				if(moving){
+					cooldown = 5;
 					downMulti = 100;
 					
 					int multi = 3;
 					if(player.isSprinting())
 						multi = 2;
+					if(player.isSneaking())
+						multi = 10;
 					double maxScatter = shootScatterMin + (shootScatterMax - shootScatterMin)/multi,
 							phase = (shootScatterMax - shootScatterMin)/(multi * 10);
-					System.out.println(currentScatter);
-					System.out.println(maxScatter);
+					//System.out.println(currentScatter);
+					//System.out.println(maxScatter);
 					if(currentScatter < maxScatter ) {
 						currentScatter += phase;
 						if(currentScatter > maxScatter)
