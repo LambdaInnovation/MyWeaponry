@@ -33,6 +33,7 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 	
 	static List<Field>
 		ints = new ArrayList(),
+		doubles = new ArrayList(),
 		strs = new ArrayList(),
 		booleans = new ArrayList();
 	
@@ -41,7 +42,9 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 			if((f.getModifiers() & Modifier.PUBLIC) != 0) {
 				if(f.getType() == Integer.TYPE) {
 					ints.add(f);
-				} else if(f.getType() == String.class) {
+				}else if(f.getType() == Double.TYPE){
+					doubles.add(f);
+				}else if(f.getType() == String.class) {
 					strs.add(f);
 				} else if(f.getType() == Boolean.TYPE) {
 					booleans.add(f);
@@ -57,6 +60,14 @@ public class ClassicWeaponRule extends ItemLoadRule<WeaponClassic> {
 			if(i != null) {
 				//System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
 				f.set(item, (int)i);
+			}
+		}
+		
+		for(Field f : doubles) {
+			Double d = ns.getDouble("weapon", f.getName());
+			if(d != null) {
+				System.out.println(String.format("[%s]Updated field %s", f.getName(), name));
+				f.set(item, (double)d);
 			}
 		}
 		
