@@ -109,6 +109,7 @@ public class ClassicRenderRule extends ItemLoadRule<WeaponClassic> {
 		Vec3 vec;
 		
 		vec = lookVector("render", compName, "transform");
+		//System.out.println(vec);
 		if(vec != null) ct.transform = vec;
 		
 		vec = lookVector("render", compName, "pivot");

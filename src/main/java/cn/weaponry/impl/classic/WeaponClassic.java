@@ -14,6 +14,18 @@ package cn.weaponry.impl.classic;
 
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
 
 import cn.liutils.util.helper.Motion3D;
@@ -43,23 +55,13 @@ import cn.weaponry.impl.classic.event.ClassicEvents.CanShoot;
 import cn.weaponry.impl.classic.event.ClassicEvents.ReloadEvent;
 import cn.weaponry.impl.classic.event.ClassicEvents.ShootEvent;
 import cn.weaponry.impl.classic.event.ClassicEvents.StartReloadEvent;
+import cn.weaponry.impl.generic.action.ScatterUpdater;
 import cn.weaponry.impl.generic.action.ScreenUplift;
 import cn.weaponry.impl.generic.action.SwingSilencer;
 import cn.weaponry.impl.generic.entity.EntityBullet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 
 /**
  * <code>WeaponClassic</code> provides a schema for a Half-Life like or CS-like weapon. <br/>
@@ -87,10 +89,13 @@ public class WeaponClassic extends WeaponBase {
 	//Shooting
 	public int shootInterval = 5;
 	public int shootDamage = 10; //Per bullet
-	public int shootScatter = 10;
 	public int shootBucks = 1; //How many bullets per shoot
 	public String shootSound;
 	public boolean isAutomatic = true;
+	
+	public double shootScatterMin = 0.2;
+	public double shootScatterMax = 0.5;
+	public double shootScatterStability = 1;
 	
 	//Reloading
 	public int reloadTime = 20;
@@ -156,8 +161,12 @@ public class WeaponClassic extends WeaponBase {
 		//System.out.println("OnShootSvr called");
 		for(int i = 0; i < shootBucks; ++i) {
 			Motion3D mo = new Motion3D(player, true);
-			mo.setMotionOffset(shootScatter);
-			Vec3 start = mo.getPosVec(), end = mo.move(60).getPosVec();
+			((ScatterUpdater)info.getAction("ScatterUpdater")).callShoot();
+			double scatter = ((ScatterUpdater)info.getAction("ScatterUpdater")).getCurrentScatter();
+			System.out.println("callShoot" + scatter);
+			mo.setMotionOffset(scatter);
+			
+			Vec3 start = mo.getPosVec(), end = mo.move(108).getPosVec();
 			MovingObjectPosition trace = Raytrace.perform(world, start, end, EntitySelectors.excludeOf(player));
 			if(trace != null && trace.typeOfHit == MovingObjectType.ENTITY) {
 				trace.entityHit.hurtResistantTime = -1;
@@ -189,6 +198,7 @@ public class WeaponClassic extends WeaponBase {
 	public void onInfoStart(ItemInfo info) {
 		super.onInfoStart(info);
 		info.addAction(new SwingSilencer());
+		info.addAction(new ScatterUpdater());
 		info.addAction(new Action() {
 
 			@Override
@@ -254,7 +264,9 @@ public class WeaponClassic extends WeaponBase {
 	 * Create the shooting entity to be spawned. The spawn is only down in client side.
 	 */
 	public Entity createBulletEffect(ItemInfo item) {
-		return new EntityBullet(item.getPlayer(), shootScatter);
+		((ScatterUpdater)item.getAction("ScatterUpdater")).callShoot();
+		double scatter = ((ScatterUpdater)item.getAction("ScatterUpdater")).getCurrentScatter();
+		return new EntityBullet(item.getPlayer(), scatter);
 	}
 	
 	public class StateIdle extends WeaponState {
