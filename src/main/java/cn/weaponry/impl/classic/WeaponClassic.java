@@ -94,8 +94,9 @@ public class WeaponClassic extends WeaponBase {
 	public boolean isAutomatic = true;
 	
 	public double shootScatterMin = 0.2;
-	public double shootScatterMax = 0.5;
+	public double shootScatterIncrement = 0.5;
 	public double shootScatterStability = 1;
+	public double movingScatterIncrement = 0.5;
 	
 	//Reloading
 	public int reloadTime = 20;
@@ -164,7 +165,7 @@ public class WeaponClassic extends WeaponBase {
 			
 			((ScatterUpdater)info.getAction("ScatterUpdater")).callShoot();
 			double scatter = ((ScatterUpdater)info.getAction("ScatterUpdater")).getCurrentScatter();
-			System.out.println("callShoot" + scatter);
+			//System.out.println("callShoot" + scatter);
 			mo.setMotionOffset(scatter);
 			
 			Vec3 start = mo.getPosVec(), end = mo.move(108).getPosVec();
