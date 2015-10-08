@@ -162,7 +162,6 @@ public class WeaponClassic extends WeaponBase {
 		//System.out.println("OnShootSvr called");
 		for(int i = 0; i < shootBucks; ++i) {
 			Motion3D mo = new Motion3D(player, true);
-			
 			((ScatterUpdater)info.getAction("ScatterUpdater")).callShoot();
 			double scatter = ((ScatterUpdater)info.getAction("ScatterUpdater")).getCurrentScatter();
 			//System.out.println("callShoot" + scatter);

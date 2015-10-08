@@ -21,6 +21,7 @@ import cn.liutils.render.material.SimpleMaterial;
 import cn.liutils.render.mesh.Mesh;
 import cn.liutils.render.mesh.MeshUtils;
 import cn.liutils.util.client.RenderUtils;
+import cn.liutils.util.generic.RandUtils;
 import cn.weaponry.api.ItemInfo;
 import cn.weaponry.api.client.render.PartedModel;
 import cn.weaponry.api.client.render.RenderInfo.Animation;
@@ -31,12 +32,13 @@ import cn.weaponry.api.client.render.RenderInfo.Animation;
  */
 public class Muzzleflash extends Animation {
 	
-	//TODO: If need animation sequence, change it
 	private static ResourceLocation MISSING = new ResourceLocation("missing");
+	
+	public ResourceLocation[] textures;
 	public ResourceLocation texture;
 	public double x = 0.7, y = 0.3, z = 0;
 	public double size = 0.45;
-	public long time = 160;
+	public long time = 100;
 	
 	static Mesh mesh;
 	static SimpleMaterial material;
@@ -53,8 +55,17 @@ public class Muzzleflash extends Animation {
 	public void load(ObjectNamespace ns) {
 		String str = ns.getString("render", "muzzleflash", "texture");
 		if(str != null) {
-			System.out.println("Update muzzleflash path for " + ns.name);
-			texture = new ResourceLocation(str);
+			int index;
+			if((index = str.lastIndexOf('#')) != -1) {
+				int n = Integer.valueOf(str.substring(index + 1, str.length()));
+				str = str.substring(0, index);
+				textures = new ResourceLocation[n];
+				for(int i = 0; i < n; ++i) {
+					textures[i] = new ResourceLocation(str + i + ".png");
+				}
+			} else {
+				texture = new ResourceLocation(str + ".png");
+			}
 		}
 		
 		Double d = ns.getDouble("render", "muzzleflash", "offset", 0);
@@ -84,6 +95,10 @@ public class Muzzleflash extends Animation {
 	public void render(ItemInfo info, PartedModel model, boolean firstPerson) {
 		double alpha = 1.0;
 		
+		if(texture == null && textures != null) {
+			texture = textures[RandUtils.nextInt(textures.length)];
+		}
+		
 		//Blend in
 		long dt = getTime();
 		if(dt < 40) {
@@ -112,8 +127,9 @@ public class Muzzleflash extends Animation {
 	}
 	
 	public <T extends Animation> T copy() {
-		T copy = super.copy();
-		return copy;
+		Muzzleflash copy = super.copy();
+		copy.textures = textures;
+		return (T) copy;
 	}
 	
 }

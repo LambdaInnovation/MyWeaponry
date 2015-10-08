@@ -125,6 +125,7 @@ public class EntityBullet extends EntityAdvanced {
 				double par6, float par8, float par9) {
 			EntityBullet bullet = (EntityBullet) entity;
 			this.fpOffsetX = 0.5;
+			this.fpOffsetZ = 0.36;
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			super.doRender(entity, par2, par4, par6, par8, par9);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);
